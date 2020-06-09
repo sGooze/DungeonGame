@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibDungeon", "LibDungeon\LibDungeon.csproj", "{81735C39-02AC-44CB-B007-B41B9758401D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonTest", "DungeonTest\DungeonTest.csproj", "{45A6D91C-03CA-4F10-B0F7-A76975D471EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81735C39-02AC-44CB-B007-B41B9758401D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81735C39-02AC-44CB-B007-B41B9758401D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81735C39-02AC-44CB-B007-B41B9758401D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81735C39-02AC-44CB-B007-B41B9758401D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45A6D91C-03CA-4F10-B0F7-A76975D471EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45A6D91C-03CA-4F10-B0F7-A76975D471EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45A6D91C-03CA-4F10-B0F7-A76975D471EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45A6D91C-03CA-4F10-B0F7-A76975D471EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D6B2737-9B68-4B2B-A93E-129573CFCCFD}
+	EndGlobalSection
+EndGlobal
