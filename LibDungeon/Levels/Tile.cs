@@ -17,7 +17,7 @@ namespace LibDungeon.Levels
         /// <summary>
         /// Тип тайла (проницаемость/проходимость)
         /// </summary>
-        public SolidityType Solidity { get; protected set; }
+        public abstract SolidityType Solidity { get; }
         /// <summary>
         /// Посещённые тайлы отображаются на экране даже в отсутствие прямой видимости
         /// </summary>
@@ -26,16 +26,26 @@ namespace LibDungeon.Levels
 
     public class Floor : Tile
     {
-        public Floor() { Solidity = SolidityType.Floor; }
+        public override SolidityType Solidity => SolidityType.Floor;
     }
 
     public class Wall : Tile
     {
-        public Wall() { Solidity = SolidityType.Wall; }
+        public override SolidityType Solidity => SolidityType.Wall;
     }
 
     public class Door : Tile
     {
-        public Door() { Solidity = SolidityType.Door; }
+        public bool IsOpen { get; set; }
+        public override SolidityType Solidity => (IsOpen) ? SolidityType.Floor : SolidityType.Wall;
+    }
+
+    public class Ladder : Tile
+    {
+        /// <summary>
+        /// Используется для связывания лестниц на разных этажах
+        /// </summary>
+        public int LadderId { get; set; }
+        public override SolidityType Solidity => SolidityType.Floor;
     }
 }

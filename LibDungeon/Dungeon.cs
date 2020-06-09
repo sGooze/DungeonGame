@@ -14,7 +14,8 @@ namespace LibDungeon
         internal static Dictionary<string, Type> Actors { get; set; }
 
         static Random random = new Random();
-        internal static BaseItem SpawnRandomItem(int minlevel = int.MinValue, int maxlevel = int.MaxValue)
+        internal static BaseItem SpawnRandomItem() => SpawnRandomItem(int.MinValue, int.MaxValue);
+        internal static BaseItem SpawnRandomItem(int minlevel, int maxlevel)
         {
             var items = Items.Select(x => x.Value).ToArray();
             return Activator.CreateInstance(items[random.Next(items.Length)]) as BaseItem;
@@ -35,9 +36,8 @@ namespace LibDungeon
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
 
-            // Созданеи списка типов
+            // Создание списков типов
             var spawnable = types.Where(x => x.IsDefined(typeof(SpawnableAttribute)));
-            //.ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
             Spawner.Items = spawnable.Where(x => x.IsSubclassOf(typeof(BaseItem)))
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
