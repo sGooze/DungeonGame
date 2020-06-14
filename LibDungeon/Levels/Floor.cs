@@ -17,23 +17,29 @@ namespace LibDungeon.Levels
     /// <summary>
     /// Составляющие подземелье уровни
     /// </summary>
-    public interface ILevel { }
+    public abstract class Level 
+    {
+        public abstract Tile[,] Tiles { get; }
+    }
 
     /// <summary>
     /// Уровень, состоящий из маленьких комнат, соединённых извилистыми узкими коридорами.
     /// </summary>
-    public class DungeonFloor : ILevel
+    public class DungeonFloor : Level
     {
         public const int width = 80, height = 80;
 
-        // Не ебём себе мозги! Объявим ♂ донжон ♂ как двумерный массив тайлов
+        // Объявим ♂ донжон ♂ как двумерный массив тайлов
         Tile[,] tiles;
 
-        public LinkedList<BaseItem> FloorItems { get; set; }
-        public LinkedList<Actor> Actors { get; set; }
+        public LinkedList<BaseItem> FloorItems { get; set; } = new LinkedList<BaseItem>();
+        public LinkedList<Actor> Actors { get; set; } = new LinkedList<Actor>();
 
-        public Tile[,] Tiles => tiles;
+        public override Tile[,] Tiles { get => tiles; }
 
+        /// <summary>
+        /// Создание нового уровня
+        /// </summary>
         public DungeonFloor()
         {
             // Изначально уровень заполнен блоками стен
@@ -246,6 +252,36 @@ namespace LibDungeon.Levels
                         }
                 }
             }
+
+            // Добавляет на уровень лестницы на другие уровни
+            // TODO: Связать их с лестницами на соседних этажах!
+            int ladder_quota = rand.Next(2, 10);
+            while (ladder_quota != 0)
+            {
+                // Поиск подходящей клетки
+                int x = rand.Next(0, width), y = rand.Next(0, height);
+                if (!tiles[x, y].Visited)
+                    continue;
+                tiles[x, y] = new Ladder() 
+                    { Direction = (ladder_quota % 2 == 0) ? Ladder.LadderDirection.Down : Ladder.LadderDirection.Up };
+                ladder_quota--;
+            }
+
+            // Добавляет на уровень предметы
+            int item_quota = 15, enemy_quota = 10;
+            while (item_quota != 0)
+            {
+                // Поиск подходящей клетки
+                int x = rand.Next(0, width), y = rand.Next(0, height);
+                if (!tiles[x, y].Visited)
+                    continue;
+                FloorItems.AddLast(Spawner.SpawnRandomItem(x, y));
+                item_quota--;
+            }
+
+            // Очищаем поле Visited; теперь оно будет использоваться для определения видимости
+            foreach (var tile in tiles)
+                tile.Visited = false;
         }
     }
 }

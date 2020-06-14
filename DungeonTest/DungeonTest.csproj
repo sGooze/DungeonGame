@@ -61,9 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawDungeon.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DrawDungeon.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>

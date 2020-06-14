@@ -77,4 +77,22 @@ namespace LibDungeon.Objects
         public abstract void Apply(Actor user);
         public abstract void Remove();
     }
+
+    [Spawnable("meme")]
+    public class TestItem : BaseItem
+    {
+        public override string Name => "meme";
+
+        public override bool RemoveOnPickup => false;
+
+        public override void Unuse(Actor user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Use(Actor user)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

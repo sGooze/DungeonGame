@@ -17,7 +17,7 @@ namespace DungeonTest
 
     public partial class FormMain : Form
     {
-        DungeonFloor floor = new DungeonFloor();
+        //DungeonFloor floor = new DungeonFloor();
         //Carver carver;
         public FormMain()
         {
@@ -26,19 +26,19 @@ namespace DungeonTest
             ClientSize = new Size(DungeonFloor.width * 10, DungeonFloor.height * 10);
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            var graph = e.Graphics;
-            graph.Clear(Color.Black);
-            floor.Draw(graph);
-        }
-
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            floor = new DungeonFloor();
+            //floor = new DungeonFloor();
             //carver = new Carver(floor);
             //timer1.Enabled = true;
             //sparsing = (DungeonFloor.height * DungeonFloor.width) / 1;
+        }
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            int coord_x = e.X / 10, coord_y = e.Y / 10;
+
+            Dungeon.PlayerPawn.X = coord_x; Dungeon.PlayerPawn.Y = coord_y;
+            Dungeon.Think();
             pictureBox1.Refresh();
         }
 
@@ -53,6 +53,7 @@ namespace DungeonTest
             }
             pictureBox1.Refresh();*/
         }
+
     }
     /*
     public class Carver
@@ -154,32 +155,5 @@ namespace DungeonTest
         }
     }
     */
-    public static class DungeonExtension
-    {
-        public static void Draw(this DungeonFloor floor, Graphics g)
-        {
-            for (int i = 0; i < DungeonFloor.width; i++)
-            {
-                for (int j = 0; j < DungeonFloor.height; j++)
-                {
-                    var tile = floor.Tiles[i, j];
-                    Brush brush;
-                    switch (tile.Solidity)
-                    {
-                        case Tile.SolidityType.Floor:
-                            brush = Brushes.LightGray; break;
-                        case Tile.SolidityType.Wall:
-                            brush = Brushes.Black; break;
-                        case Tile.SolidityType.Door:
-                            brush = Brushes.DarkOrange; break;
-                        default:
-                            brush = Brushes.Pink; break;
-                    }
-                    g.FillRectangle(brush, i * 10, j * 10, 10, 10);
-                    if (tile.Visited)
-                        g.DrawRectangle(Pens.Red, i * 10, j * 10, 10, 10);
-                }
-            }
-        }
-    }
+    
 }

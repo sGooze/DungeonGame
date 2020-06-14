@@ -6,8 +6,4 @@
     <Description>Невероятные путешествия, полные пугающих тайн....</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Logic\" />
-  </ItemGroup>
-
 </Project>

@@ -36,16 +36,26 @@ namespace LibDungeon.Levels
 
     public class Door : Tile
     {
-        public bool IsOpen { get; set; }
+        public bool IsOpen { get; set; } = false;
         public override SolidityType Solidity => (IsOpen) ? SolidityType.Floor : SolidityType.Wall;
     }
 
     public class Ladder : Tile
     {
+        public enum LadderDirection
+        {
+            Up,
+            Down
+        }
+
         /// <summary>
         /// Используется для связывания лестниц на разных этажах
         /// </summary>
         public int LadderId { get; set; }
+        /// <summary>
+        /// Направление, в которое ведёт лестница
+        /// </summary>
+        public LadderDirection Direction { get; set; } = LadderDirection.Down;
         public override SolidityType Solidity => SolidityType.Floor;
     }
 }
