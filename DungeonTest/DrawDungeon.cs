@@ -15,9 +15,9 @@ namespace DungeonTest
         public static void Draw(this DungeonFloor floor, Graphics g)
         {
             // Рисование пола
-            for (int i = 0; i < DungeonFloor.width; i++)
+            for (int i = 0; i < floor.Width; i++)
             {
-                for (int j = 0; j < DungeonFloor.height; j++)
+                for (int j = 0; j < floor.Height; j++)
                 {
                     var tile = floor.Tiles[i, j];
                     Brush brush;
@@ -33,34 +33,41 @@ namespace DungeonTest
                             brush = Brushes.Pink; break;
                     }*/
 
-                    switch (tile)
-                    {
-                        case Floor tfloor:
-                            brush = Brushes.LightGray; break;
-                        case Wall twall:
-                            brush = Brushes.Black; break;
-                        case Door tdoor:
-                            brush = Brushes.DarkOrange; break;
-                        case Ladder tladder:
-                            brush = (tladder.Direction == Ladder.LadderDirection.Down) ? Brushes.Green : Brushes.Blue;
-                            break;
-                        default:
-                            brush = Brushes.Pink; break;
-                    }
+                    if (tile.Visible)
+                        switch (tile)
+                        {
+                            case Floor tfloor:
+                                brush = Brushes.LightGray; break;
+                            case Wall twall:
+                                brush = Brushes.DarkBlue; break;
+                            case Door tdoor:
+                                brush = (tdoor.IsOpen) ? Brushes.Orange : Brushes.DarkOrange; break;
+                            case Ladder tladder:
+                                brush = (tladder.Direction == Ladder.LadderDirection.Down) ? Brushes.Green : Brushes.Blue;
+                                break;
+                            default:
+                                brush = Brushes.Pink; break;
+                        }
+                    else if (tile.Visited && !(tile is Wall))
+                        brush = Brushes.DarkGray;
+                    else 
+                        brush = Brushes.Black;
                     g.FillRectangle(brush, i * 10, j * 10, 10, 10);
-                    if (tile.Visited)
-                        g.DrawRectangle(Pens.Red, i * 10, j * 10, 10, 10);
+                    /*if (tile.Visited)
+                        g.DrawRectangle(Pens.Red, i * 10, j * 10, 10, 10);*/
                 }
             }
 
             foreach(var item in floor.FloorItems)
             {
-                g.FillEllipse(Brushes.DarkRed, item.X * 10, item.Y * 10, 10, 10);
+                if (floor.Tiles[item.X, item.Y].Visible)
+                    g.FillEllipse(Brushes.DarkRed, item.X * 10, item.Y * 10, 10, 10);
             }
 
             foreach (var actor in floor.Actors)
             {
-                g.FillEllipse(Brushes.Blue, actor.X * 10, actor.Y * 10, 10, 10);
+                if (floor.Tiles[actor.X, actor.Y].Visible)
+                    g.FillEllipse(Brushes.Blue, actor.X * 10, actor.Y * 10, 10, 10);
             }
 
             

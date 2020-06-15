@@ -20,6 +20,10 @@ namespace LibDungeon.Levels
     public abstract class Level 
     {
         public abstract Tile[,] Tiles { get; }
+        protected int _width = 80, _height = 80;
+
+        public int Width { get => _width; }
+        public int Height { get => _height; }
     }
 
     /// <summary>
@@ -27,7 +31,6 @@ namespace LibDungeon.Levels
     /// </summary>
     public class DungeonFloor : Level
     {
-        public const int width = 80, height = 80;
 
         // Объявим ♂ донжон ♂ как двумерный массив тайлов
         Tile[,] tiles;
@@ -37,11 +40,16 @@ namespace LibDungeon.Levels
 
         public override Tile[,] Tiles { get => tiles; }
 
+
+        public DungeonFloor() : this(80, 80) { }
+
         /// <summary>
         /// Создание нового уровня
         /// </summary>
-        public DungeonFloor()
+        public DungeonFloor(int width, int height)
         {
+            _width = width;
+            _height = height;
             // Изначально уровень заполнен блоками стен
             tiles = new Tile[width, height];
             for (int i = 0; i < width; i++)

@@ -59,6 +59,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "FormMain";
             this.Text = "♂ Dungeon ♂";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormMain_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

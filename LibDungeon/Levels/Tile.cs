@@ -8,6 +8,8 @@ namespace LibDungeon.Levels
 {
     abstract public class Tile
     {
+        private bool visible = false;
+
         public enum SolidityType
         {
             Wall,
@@ -18,6 +20,8 @@ namespace LibDungeon.Levels
         /// Тип тайла (проницаемость/проходимость)
         /// </summary>
         public abstract SolidityType Solidity { get; }
+
+        public bool Visible { get => visible; set { if (value) Visited = true; visible = value; } }
         /// <summary>
         /// Посещённые тайлы отображаются на экране даже в отсутствие прямой видимости
         /// </summary>

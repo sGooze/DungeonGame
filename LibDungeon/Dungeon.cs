@@ -63,12 +63,13 @@ namespace LibDungeon
             Spawner.Actors = spawnable.Where(x => x.IsSubclassOf(typeof(Actor)))
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
-            floors.Add(new DungeonFloor());
-            while (true)
+            floors.Add(new DungeonFloor(60, 60)); // Первый уровень поменьше остальных
+            PlayerPawn = new Char();
+            while (CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень
-                PlayerPawn = new Char() { X = 40, Y = 40 };
-                break;
+                PlayerPawn.X = Spawner.Random.Next(0, CurrentLevel.Width);
+                PlayerPawn.Y = Spawner.Random.Next(0, CurrentLevel.Height);
             }
             UpdateVisits();
         }

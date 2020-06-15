@@ -35,6 +35,12 @@ namespace LibDungeon.Objects
         /// Определяет дальнейшие действия
         /// </summary>
         public abstract void Think();
+
+        public void ChangePos(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 
     /// <summary>
