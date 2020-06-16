@@ -12,65 +12,75 @@ namespace DungeonTest
 {
     public static class DungeonExtension
     {
-        public static void Draw(this DungeonFloor floor, Graphics g)
+        static Image sprites = Image.FromFile("Resources\\sheet.png");
+        public static void Draw(this DungeonFloor floor, LibDungeon.Objects.Actor player, Size out_zone, Graphics g)
         {
+            // Ограничиваем выводимые спрайты размером контрола
+            // По центру располагается игрок
+            int borderX = out_zone.Width / 2 - 32,
+                borderY = out_zone.Height / 2 - 32;
+
             // Рисование пола
             for (int i = 0; i < floor.Width; i++)
             {
                 for (int j = 0; j < floor.Height; j++)
                 {
-                    var tile = floor.Tiles[i, j];
-                    Brush brush;
-                    /*switch (tile.Solidity)
-                    {
-                        case Tile.SolidityType.Floor:
-                            brush = Brushes.LightGray; break;
-                        case Tile.SolidityType.Wall:
-                            brush = Brushes.Black; break;
-                        case Tile.SolidityType.Door:
-                            brush = Brushes.DarkOrange; break;
-                        default:
-                            brush = Brushes.Pink; break;
-                    }*/
+                    int screenX = (i - player.X) * 32, 
+                        screenY = (j - player.Y) * 32;
 
+                    if (Math.Abs(screenX) >= borderX || Math.Abs(screenY) >= borderY)
+                        continue;
+
+                    screenX += borderX; screenY += borderY;
+                    var tile = floor.Tiles[i, j];
                     if (tile.Visible)
+                    {
+                        Rectangle zone = new Rectangle(0, 0, 32, 32);
                         switch (tile)
                         {
                             case Floor tfloor:
-                                brush = Brushes.LightGray; break;
-                            case Wall twall:
-                                brush = Brushes.DarkBlue; break;
-                            case Door tdoor:
-                                brush = (tdoor.IsOpen) ? Brushes.Orange : Brushes.DarkOrange; break;
-                            case Ladder tladder:
-                                brush = (tladder.Direction == Ladder.LadderDirection.Down) ? Brushes.Green : Brushes.Blue;
+                                zone.X = 32 * 2;
                                 break;
-                            default:
-                                brush = Brushes.Pink; break;
+                            case Wall twall:
+                                zone.X = 32 * 5;
+                                break;
+                            case Door tdoor:
+                                zone.X = 32 * (tdoor.IsOpen ? 1 : 0);
+                                break;
+                            case Ladder tladder:
+                                zone.X = 32 * (tladder.Direction == Ladder.LadderDirection.Down ? 3 : 4);
+                                break;
+                            /*default:
+                                brush = Brushes.Pink; 
+                                break;*/
                         }
-                    else if (tile.Visited && !(tile is Wall))
-                        brush = Brushes.DarkGray;
-                    else 
-                        brush = Brushes.Black;
-                    g.FillRectangle(brush, i * 10, j * 10, 10, 10);
-                    /*if (tile.Visited)
-                        g.DrawRectangle(Pens.Red, i * 10, j * 10, 10, 10);*/
+                        g.DrawImage(sprites, screenX, screenY, zone, GraphicsUnit.Pixel);
+                        //g.DrawImage(sprites, i*32, j*32, zone, GraphicsUnit.Pixel);
+                    }
+                    else if(tile.Visited && !(tile is Wall))
+                    {
+                        g.FillRectangle(Brushes.DarkBlue, screenX, screenY, 32, 32);
+                    }
                 }
             }
+            g.FillRectangle(Brushes.Aqua, borderX, borderY, 32, 32);
 
-            foreach(var item in floor.FloorItems)
+            foreach (var item in floor.FloorItems)
             {
-                if (floor.Tiles[item.X, item.Y].Visible)
-                    g.FillEllipse(Brushes.DarkRed, item.X * 10, item.Y * 10, 10, 10);
+                int screenX = (item.X - player.X) * 32,
+                    screenY = (item.Y - player.Y) * 32;
+                if (floor.Tiles[item.X, item.Y].Visible &&
+                    (Math.Abs(screenX) < borderX && Math.Abs(screenY) < borderY))
+                    g.FillEllipse(Brushes.DarkRed, screenX + borderX, screenY + borderY, 32, 32);
             }
 
-            foreach (var actor in floor.Actors)
-            {
-                if (floor.Tiles[actor.X, actor.Y].Visible)
-                    g.FillEllipse(Brushes.Blue, actor.X * 10, actor.Y * 10, 10, 10);
-            }
+            //foreach (var actor in floor.Actors)
+            //{
+            //    if (floor.Tiles[actor.X, actor.Y].Visible)
+            //        g.FillEllipse(Brushes.Blue, actor.X * 32, actor.Y * 32, 32, 32);
+            //}
 
-            
+
         }
     }
 
@@ -88,10 +98,10 @@ namespace DungeonTest
             var graph = e.Graphics;
             graph.Clear(Color.Black);
             //floor.Draw(graph);
-            (Dungeon.CurrentLevel as DungeonFloor).Draw(graph);
-            graph.FillRectangle(Brushes.Aqua, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10, 10, 10);
-            graph.DrawString("@", SystemFonts.DefaultFont,
-                Brushes.Black, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10);
+            (Dungeon.CurrentLevel as DungeonFloor).Draw(Dungeon.PlayerPawn, pictureBox1.Size, graph);
+            //graph.FillRectangle(Brushes.Aqua, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10, 10, 10);
+            //graph.DrawString("@", SystemFonts.DefaultFont,
+            //    Brushes.Black, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10);
         }
     }
 }
