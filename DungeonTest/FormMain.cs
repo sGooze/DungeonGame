@@ -17,11 +17,14 @@ namespace DungeonTest
 
     public partial class FormMain : Form
     {
+        LibDungeon.Dungeon Dungeon;
         //DungeonFloor floor = new DungeonFloor();
         //Carver carver;
         public FormMain()
         {
             InitializeComponent();
+
+            Dungeon = new LibDungeon.Dungeon();
 
             ClientSize = new Size(80 * 10, 80 * 10);
         }
@@ -94,8 +97,24 @@ namespace DungeonTest
                 System.Media.SystemSounds.Hand.Play();
             else
             {
-                pictureBox1.Refresh();
+                FormUpdate();
             }
+        }
+
+        private void FormUpdate()
+        {
+            lbInventory.Items.Clear();
+            lbInventory.Items.AddRange(Dungeon.Inventory.ToArray());
+            pictureBox1.Refresh();
+        }
+
+        private void btnDispose_Click(object sender, EventArgs e)
+        {
+            if (lbInventory.SelectedIndex == -1) 
+                return;
+            var item = (lbInventory.SelectedItem as LibDungeon.Objects.BaseItem);
+            Dungeon.Inventory.Remove(item);
+            FormUpdate();
         }
     }
 }

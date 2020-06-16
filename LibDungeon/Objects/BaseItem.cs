@@ -56,6 +56,8 @@ namespace LibDungeon.Objects
         /// </summary>
         /// <param name="user"></param>
         public abstract void Unuse(Actor user);
+
+        public override string ToString() => Name;
     }
 
     /// <summary>
@@ -81,7 +83,9 @@ namespace LibDungeon.Objects
     [Spawnable("meme")]
     public class TestItem : BaseItem
     {
-        public override string Name => "meme";
+        int rand;
+
+        public override string Name => $"Шутка за {rand}";
 
         public override bool RemoveOnPickup => false;
 
@@ -94,5 +98,7 @@ namespace LibDungeon.Objects
         {
             throw new NotImplementedException();
         }
+
+        public TestItem() => rand = Spawner.Random.Next(0, 301);
     }
 }

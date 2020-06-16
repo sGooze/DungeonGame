@@ -24,6 +24,7 @@ namespace LibDungeon
             sitem.X = coord_x; sitem.Y = coord_y;
             return sitem;
         }
+
     }
 
     /// <summary>
@@ -63,7 +64,7 @@ namespace LibDungeon
             Spawner.Actors = spawnable.Where(x => x.IsSubclassOf(typeof(Actor)))
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
-            floors.Add(new DungeonFloor(60, 60)); // Первый уровень поменьше остальных
+            floors.Add(new DungeonFloor(35, 35)); // Первый уровень поменьше остальных
             PlayerPawn = new Char();
             while (CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {

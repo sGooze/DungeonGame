@@ -22,6 +22,9 @@ namespace LibDungeon.Levels
         public abstract Tile[,] Tiles { get; }
         protected int _width = 80, _height = 80;
 
+        public LinkedList<BaseItem> FloorItems { get; set; } = new LinkedList<BaseItem>();
+        public LinkedList<Actor> Actors { get; set; } = new LinkedList<Actor>();
+
         public int Width { get => _width; }
         public int Height { get => _height; }
     }
@@ -35,8 +38,6 @@ namespace LibDungeon.Levels
         // Объявим ♂ донжон ♂ как двумерный массив тайлов
         Tile[,] tiles;
 
-        public LinkedList<BaseItem> FloorItems { get; set; } = new LinkedList<BaseItem>();
-        public LinkedList<Actor> Actors { get; set; } = new LinkedList<Actor>();
 
         public override Tile[,] Tiles { get => tiles; }
 
@@ -137,6 +138,8 @@ namespace LibDungeon.Levels
             {
                 // Generate a list of non-intersecting room bounding boxes
                 Queue<Rectangle> rooms = new Queue<Rectangle>(10);
+                int maxTries = 20; // Если после такого числа попыток не удаётся разместить новую комнату, то брейк
+                int tries = maxTries;
                 for (int i = 0; i < 20; i++)
                 {
                     int rw = rand.Next(4, 20), rh = rand.Next(4, 20);
@@ -151,8 +154,16 @@ namespace LibDungeon.Levels
                             break;
                         }
                     if (validRoom)
+                    {
                         rooms.Enqueue(room);
-                    else i--;
+                        tries = maxTries;
+                    }
+                    else
+                    {
+                        i--;
+                        if (--tries <= 0)
+                            break;
+                    }
                 }
 
                 // Carve rooms inside the floor's tile list

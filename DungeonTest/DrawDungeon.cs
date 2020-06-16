@@ -86,8 +86,6 @@ namespace DungeonTest
 
     public partial class FormMain : Form
     {
-        LibDungeon.Dungeon Dungeon = new LibDungeon.Dungeon();
-
         /// <summary>
         /// Отрисовывает игровой мир
         /// </summary>

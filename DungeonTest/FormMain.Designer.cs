@@ -32,6 +32,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnDispose = new System.Windows.Forms.Button();
+            this.btnEquip = new System.Windows.Forms.Button();
             this.lbEquipment = new System.Windows.Forms.ListBox();
             this.lbInventory = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -60,6 +62,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnDispose);
+            this.panel1.Controls.Add(this.btnEquip);
             this.panel1.Controls.Add(this.lbEquipment);
             this.panel1.Controls.Add(this.lbInventory);
             this.panel1.Controls.Add(this.label1);
@@ -69,20 +73,43 @@
             this.panel1.Size = new System.Drawing.Size(200, 484);
             this.panel1.TabIndex = 1;
             // 
+            // btnDispose
+            // 
+            this.btnDispose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDispose.Location = new System.Drawing.Point(122, 449);
+            this.btnDispose.Name = "btnDispose";
+            this.btnDispose.Size = new System.Drawing.Size(75, 23);
+            this.btnDispose.TabIndex = 4;
+            this.btnDispose.Text = "Выбросить";
+            this.btnDispose.UseVisualStyleBackColor = true;
+            this.btnDispose.Click += new System.EventHandler(this.btnDispose_Click);
+            // 
+            // btnEquip
+            // 
+            this.btnEquip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnEquip.Location = new System.Drawing.Point(12, 449);
+            this.btnEquip.Name = "btnEquip";
+            this.btnEquip.Size = new System.Drawing.Size(75, 23);
+            this.btnEquip.TabIndex = 3;
+            this.btnEquip.Text = "Использовать";
+            this.btnEquip.UseVisualStyleBackColor = true;
+            // 
             // lbEquipment
             // 
             this.lbEquipment.FormattingEnabled = true;
-            this.lbEquipment.Location = new System.Drawing.Point(12, 185);
+            this.lbEquipment.Location = new System.Drawing.Point(12, 208);
             this.lbEquipment.Name = "lbEquipment";
             this.lbEquipment.Size = new System.Drawing.Size(185, 95);
             this.lbEquipment.TabIndex = 2;
             // 
             // lbInventory
             // 
+            this.lbInventory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lbInventory.FormattingEnabled = true;
-            this.lbInventory.Location = new System.Drawing.Point(12, 286);
+            this.lbInventory.Location = new System.Drawing.Point(12, 309);
             this.lbInventory.Name = "lbInventory";
-            this.lbInventory.Size = new System.Drawing.Size(185, 186);
+            this.lbInventory.Size = new System.Drawing.Size(185, 134);
             this.lbInventory.TabIndex = 1;
             // 
             // label1
@@ -120,6 +147,8 @@
         private System.Windows.Forms.ListBox lbEquipment;
         private System.Windows.Forms.ListBox lbInventory;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnDispose;
+        private System.Windows.Forms.Button btnEquip;
     }
 }
 

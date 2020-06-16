@@ -98,6 +98,8 @@ namespace LibDungeon
                 // TODO: Проверить наличие актёров в клетке! Если они есть то атаковать их
                 PlayerPawn.X = x; PlayerPawn.Y = y;
                 Think();
+                // Если мы не в бою, то попробуем подобрать что-нибудь
+                PlayerMove(PlayerCommand.PickupItem);
                 return true;
             }
             // Лестница
@@ -114,7 +116,10 @@ namespace LibDungeon
                 if (nextlevel >= floors.Count)
                 {
                     ourpos.LadderId = Spawner.Random.Next();
-                    var newfloor = new DungeonFloor(); floors.Add(newfloor);
+                    var newfloor = new DungeonFloor(
+                        Spawner.Random.Next(currentLevel+2*10, 81), Spawner.Random.Next(currentLevel + 2 * 10, 81)
+                    ); 
+                    floors.Add(newfloor);
                     for (int lx = 0; lx < newfloor.Width; lx++)
                         for (int ly = 0; ly < newfloor.Height; ly++)
                             if (newfloor.Tiles[lx,ly] is Ladder 
@@ -133,6 +138,21 @@ namespace LibDungeon
                     return false;
                 }
                 currentLevel = nextlevel;
+                return true;
+            }
+
+            // Поднятие предмета
+            if (command == PlayerCommand.PickupItem)
+            {
+                var item = CurrentLevel.FloorItems.FirstOrDefault(x => x.X == PlayerPawn.X && x.Y == PlayerPawn.Y);
+                if (item == null)
+                    return false;
+
+                CurrentLevel.FloorItems.Remove(item);
+                if (item.RemoveOnPickup)
+                    item.Use(PlayerPawn);
+                else
+                    Inventory.AddLast(item);
                 return true;
             }
             return false;
@@ -180,5 +200,9 @@ namespace LibDungeon
                     }
             }
         }
+
+
+        public LinkedList<BaseItem> Inventory { get; set; } = new LinkedList<BaseItem>();
+
     }
 }
