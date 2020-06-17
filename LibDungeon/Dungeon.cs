@@ -85,6 +85,10 @@ namespace LibDungeon
             }
             UpdateVisits();
         }
+
+        public static event EventHandler<string> ClientMessageSent;
+
+        internal static void SendClientMessage(object sender, string msg) => ClientMessageSent?.Invoke(sender, msg);
     }
 
 

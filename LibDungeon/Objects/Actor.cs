@@ -85,8 +85,11 @@ namespace LibDungeon.Objects
                 return ThoughtTypeEnum.Stand;
 
             if (enraged) return ThoughtTypeEnum.AttackPlayer;
-            if (Math.Pow(X - hostile.X, 2) + Math.Pow(Y - hostile.Y, 2) <= 36)
+            if (Math.Pow(X - hostile.X, 2) + Math.Pow(Y - hostile.Y, 2) <= 36 && !enraged)
+            {
+                Dungeon.SendClientMessage(this, $"{Name}: Я вижу тебя! Ты на {hostile.X},{hostile.Y}");
                 enraged = true;
+            }
             return ThoughtTypeEnum.Stand;
         }
 
