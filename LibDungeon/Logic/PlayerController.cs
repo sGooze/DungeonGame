@@ -88,6 +88,7 @@ namespace LibDungeon
                     if (CurrentLevel.Tiles[x, y] is Door)
                     {
                         (CurrentLevel.Tiles[x, y] as Door).IsOpen = true;
+                        PlayerPawn.MovePoints = 0;
                         Think();
                         return true;
                     }
@@ -97,6 +98,7 @@ namespace LibDungeon
                 // Иначе считаем, что клетка проходима (Floor)
                 // TODO: Проверить наличие актёров в клетке! Если они есть то атаковать их
                 PlayerPawn.X = x; PlayerPawn.Y = y;
+                PlayerPawn.MovePoints = 0;
                 Think();
                 // Если мы не в бою, то попробуем подобрать что-нибудь
                 PlayerMove(PlayerCommand.PickupItem);

@@ -23,7 +23,7 @@ namespace LibDungeon.Levels
         protected int _width = 80, _height = 80;
 
         public LinkedList<BaseItem> FloorItems { get; set; } = new LinkedList<BaseItem>();
-        public LinkedList<Actor> Actors { get; set; } = new LinkedList<Actor>();
+        public LinkedList<Actor> FloorActors { get; set; } = new LinkedList<Actor>();
 
         public int Width { get => _width; }
         public int Height { get => _height; }
@@ -296,6 +296,15 @@ namespace LibDungeon.Levels
                     continue;
                 FloorItems.AddLast(Spawner.SpawnRandomItem(x, y));
                 item_quota--;
+            }
+            while (enemy_quota != 0)
+            {
+                // Поиск подходящей клетки
+                int x = rand.Next(0, width), y = rand.Next(0, height);
+                if (!tiles[x, y].Visited)
+                    continue;
+                FloorActors.AddLast(Spawner.SpawnRandomActor(x, y));
+                enemy_quota--;
             }
 
             // Очищаем поле Visited; теперь оно будет использоваться для определения видимости
