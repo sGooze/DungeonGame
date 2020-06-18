@@ -7,9 +7,12 @@ namespace LibDungeon
 {
     using LibDungeon.Levels;
     using Objects;
+    using System.IO;
+    using System.Security.Cryptography.X509Certificates;
 
     public partial class Dungeon
     {
+        Random random = new Random();
         public enum PlayerCommand
         {
             // Перемещение по миру + взаимодействие + атака
@@ -112,31 +115,85 @@ namespace LibDungeon
                 int nextlevel = currentLevel + ((ourpos.Direction == Ladder.LadderDirection.Up) ? -1 : 1);
                 if (nextlevel < 0)
                     return false;
-                // Если следующий уровень ещё не сгенерирован, то сгенерировать и связать текущую лестницу со случайной
-                if (nextlevel >= floors.Count)
+                // Если следующий уровень ещё не сгенерирован, то сгенерировать и связать текущую лестницу со случайной              
+                if (nextlevel > floors.Count - 1)// Уравнял счетчик с индексами
                 {
-                    ourpos.LadderId = Spawner.Random.Next();
+                    ourpos.LadderId = random.Next(1, Int32.MaxValue);
                     var newfloor = new DungeonFloor(
                         Spawner.Random.Next(currentLevel+2*10, 81), Spawner.Random.Next(currentLevel + 2 * 10, 81)
                     ); 
                     floors.Add(newfloor);
-                    for (int lx = 0; lx < newfloor.Width; lx++)
-                        for (int ly = 0; ly < newfloor.Height; ly++)
-                            if (newfloor.Tiles[lx,ly] is Ladder 
-                                && (newfloor.Tiles[lx, ly] as Ladder).Direction == Ladder.LadderDirection.Up)
-                            {
-                                (newfloor.Tiles[lx, ly] as Ladder).LadderId = ourpos.LadderId;
-                                PlayerPawn.ChangePos(lx, ly);
+                    int lx = 0;
+                    int ly = 0;
+                    for (int i = 0; i < newfloor.Width; i++)
+                    {                    
+                        for (int j = 0; j < newfloor.Height; j++)
+                        {
+                        
+                            if (newfloor.Tiles[i,j] is Ladder 
+                                && (newfloor.Tiles[i, j] as Ladder).Direction == Ladder.LadderDirection.Up)
+                            {   
+                                lx = i;
+                                ly = j;
+                                PlayerPawn.ChangePos(lx, ly);                                
                             }
+                        }
+                    }
+                    (newfloor.Tiles[lx, ly] as Ladder).LadderId = ourpos.LadderId;
                 }
                 // Если он уже существует, то попытаться найти свободную лестницу, если не выйдет, то скинуть в случ.
                 // позицию.
                 else
                 {
+                    //Этаж на который переходим
+                    var floor = floors[nextlevel];
+                    
+                    if (ourpos.LadderId == 0)
+                    {
+                        int lx = 0;
+                        int ly = 0;
+                        //Задаем id для новой лестницы
+                        ourpos.LadderId = random.Next(1, Int32.MaxValue);
+                        for (int i = 0; i < floor.Width; i++)
+                        {
+                            for (int j = 0; j < floor.Height; j++)
+                            {
+                                //Если 2 лестницы не связаны, то ищем свободную
+                                if (floor.Tiles[i, j] is Ladder                               
+                                    && (floor.Tiles[i, j] as Ladder).LadderId == 0
+                                    && (floor.Tiles[i, j] as Ladder).Direction != ourpos.Direction)
+                                {
+                                    lx = i;
+                                    ly = j;
+                                    PlayerPawn.ChangePos(lx, ly);                                       
+                                }
+                            }
+                        }
+                        (floor.Tiles[lx, ly] as Ladder).LadderId = ourpos.LadderId;
+                    }
+
+                    else 
+                    {
+                        
+                        for (int i = 0; i < floor.Width; i++)
+                        {
+                            for (int j = 0; j < floor.Height; j++)
+                            {
+                                //Если 2 лестницы связаны то перемещаемся по ним
+                                if (floor.Tiles[i, j] is Ladder                               
+                                    && (floor.Tiles[i, j] as Ladder).LadderId == ourpos.LadderId)
+                                {
+                                    PlayerPawn.ChangePos(i, j);                                    
+                                }
+                            }
+                        } 
+                    }
+                                    
                     // TODO: Слать события с текстовыми сообщениями? Например "лестница обвалилась", если не удаётся
                     // сгенерировать проход между двумя этажами
-                    return false;
+                    //return false;
                 }
+                
                 currentLevel = nextlevel;
                 return true;
             }

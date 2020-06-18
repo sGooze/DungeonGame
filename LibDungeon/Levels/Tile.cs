@@ -54,8 +54,9 @@ namespace LibDungeon.Levels
 
         /// <summary>
         /// Используется для связывания лестниц на разных этажах
-        /// </summary>
-        public int LadderId { get; set; }
+        /// </summary>        
+        public int LadderId { get; set; } = 0;
+       
         /// <summary>
         /// Направление, в которое ведёт лестница
         /// </summary>
