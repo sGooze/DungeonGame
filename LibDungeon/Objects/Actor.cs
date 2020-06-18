@@ -10,6 +10,8 @@ namespace LibDungeon.Objects
     /// </summary>
     public abstract class Actor
     {
+        private int movePoints;
+
         public int X { get; set; }
         public int Y { get; set; }
         public int Health { get; set; }
@@ -23,18 +25,19 @@ namespace LibDungeon.Objects
 
 
         /// <summary>
-        /// Очки передвижения. Пока они не исчерпаны, актёр может продолжать думать
-        /// Перезаряжаются в конце раунда
+        /// Очки передвижения. Каждый вызов Think() даёт актёру одно очко. Только когда число очков достигает
+        /// максимума, актёр можт потратить их все и выполнить какое-либо действие.
+        /// Другими словами, чем меньше очков, тем чаще актёр может действовать.
         /// </summary>
-        public int MovePoints { get; set; }
+        public int MovePoints { get => movePoints; set => movePoints = Math.Min(value, MaxMovePoints); }
+        public int MaxMovePoints { get; set; }
 
         public abstract string Name { get; }
-        public abstract int MaxMovePoints { get; }
 
         /// <summary>
         /// Определяет дальнейшие действия
         /// </summary>
-        public abstract void Think();
+        public abstract ThoughtTypeEnum Think(Actor hostile);
 
         public void ChangePos(int x, int y)
         {
@@ -73,11 +76,21 @@ namespace LibDungeon.Objects
     {
         public override string Name => "Персонаж";
 
-        public override int MaxMovePoints => 2;
-
-        public override void Think()
+        bool enraged = false;
+        public override ThoughtTypeEnum Think(Actor hostile)
         {
-            throw new NotImplementedException();
+            if (Health == 0)
+                return ThoughtTypeEnum.Dead;
+            if (hostile == this)
+                return ThoughtTypeEnum.Stand;
+
+            if (enraged) return ThoughtTypeEnum.AttackPlayer;
+            if (Math.Pow(X - hostile.X, 2) + Math.Pow(Y - hostile.Y, 2) <= 36 && !enraged)
+            {
+                Dungeon.SendClientMessage(this, $"{Name}: Я вижу тебя! Ты на {hostile.X},{hostile.Y}");
+                enraged = true;
+            }
+            return ThoughtTypeEnum.Stand;
         }
 
         public Char()
@@ -86,6 +99,7 @@ namespace LibDungeon.Objects
             Attack = 2;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
+            MaxMovePoints = 4;
             MovePoints = MaxMovePoints;
         }
     }

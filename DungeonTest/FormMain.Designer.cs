@@ -37,6 +37,7 @@
             this.lbEquipment = new System.Windows.Forms.ListBox();
             this.lbInventory = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtMessages = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +50,7 @@
             this.pictureBox1.BackColor = System.Drawing.Color.DimGray;
             this.pictureBox1.Location = new System.Drawing.Point(206, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(415, 484);
+            this.pictureBox1.Size = new System.Drawing.Size(415, 356);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -121,11 +122,22 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
+            // txtMessages
+            // 
+            this.txtMessages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMessages.Location = new System.Drawing.Point(206, 362);
+            this.txtMessages.Multiline = true;
+            this.txtMessages.Name = "txtMessages";
+            this.txtMessages.Size = new System.Drawing.Size(415, 122);
+            this.txtMessages.TabIndex = 2;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(622, 484);
+            this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBox1);
             this.KeyPreview = true;
@@ -136,6 +148,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -149,6 +162,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDispose;
         private System.Windows.Forms.Button btnEquip;
+        private System.Windows.Forms.TextBox txtMessages;
     }
 }
 

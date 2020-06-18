@@ -74,11 +74,14 @@ namespace DungeonTest
                     g.FillEllipse(Brushes.DarkRed, screenX + borderX, screenY + borderY, 32, 32);
             }
 
-            //foreach (var actor in floor.Actors)
-            //{
-            //    if (floor.Tiles[actor.X, actor.Y].Visible)
-            //        g.FillEllipse(Brushes.Blue, actor.X * 32, actor.Y * 32, 32, 32);
-            //}
+            foreach (var actor in floor.FloorActors)
+            {
+                int screenX = (actor.X - player.X) * 32,
+                    screenY = (actor.Y - player.Y) * 32;
+                if (floor.Tiles[actor.X, actor.Y].Visible &&
+                    (Math.Abs(screenX) < borderX && Math.Abs(screenY) < borderY))
+                    g.FillRectangle(Brushes.OrangeRed, screenX + borderX, screenY + borderY, 32, 32);
+            }
 
 
         }

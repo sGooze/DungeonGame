@@ -25,6 +25,16 @@ namespace LibDungeon
             return sitem;
         }
 
+
+        internal static Actor SpawnRandomActor(int x, int y) => SpawnRandomActor(x, y, int.MinValue, int.MaxValue);
+        internal static Actor SpawnRandomActor(int coord_x, int coord_y, int minlevel, int maxlevel)
+        {
+            var actors = Actors.Select(x => x.Value).ToArray();
+            var sactor = Activator.CreateInstance(actors[random.Next(actors.Length)]) as Actor;
+            sactor.X = coord_x; sactor.Y = coord_y;
+            return sactor;
+        }
+
     }
 
     /// <summary>
@@ -66,6 +76,7 @@ namespace LibDungeon
 
             floors.Add(new DungeonFloor(35, 35)); // Первый уровень поменьше остальных
             PlayerPawn = new Char();
+            PlayerPawn.MaxMovePoints = 2; // Делаем игрока чуть быстрее остальных
             while (CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень
@@ -75,10 +86,9 @@ namespace LibDungeon
             UpdateVisits();
         }
 
-        public void Think()
-        {
-            UpdateVisits();
-        }
+        public static event EventHandler<string> ClientMessageSent;
+
+        internal static void SendClientMessage(object sender, string msg) => ClientMessageSent?.Invoke(sender, msg);
     }
 
 

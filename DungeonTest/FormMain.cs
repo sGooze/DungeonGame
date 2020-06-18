@@ -25,8 +25,15 @@ namespace DungeonTest
             InitializeComponent();
 
             Dungeon = new LibDungeon.Dungeon();
+            LibDungeon.Dungeon.ClientMessageSent += Dungeon_ClientMessageSent;
 
             ClientSize = new Size(80 * 10, 80 * 10);
+        }
+
+        private void Dungeon_ClientMessageSent(object sender, string e)
+        {
+            txtMessages.AppendText(e);
+            txtMessages.AppendText("\r\n");
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
