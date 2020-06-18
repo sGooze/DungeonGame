@@ -32,13 +32,13 @@ namespace LibDungeon
             LadderUp,
 
             PickupItem,
+
+            OpenDoor,
+            CloseDoor
         }
 
-        /*public class RemoteMsg
-        {
-            PlayerCommands MsgType { get; set; }
-            Dictionary<string, string> KeyValues { get; set; } = new Dictionary<string, string>();
-        }*/
+        
+        
 
         /// <summary>
         /// Выполнить игровое действие
@@ -47,12 +47,53 @@ namespace LibDungeon
         /// <returns>
         /// <code>true</code>, если действие принято и ход засчитан, <code>false</code> в обратном случае.
         /// </returns>
-        public bool PlayerMove(PlayerCommand command)
+        public bool PlayerMove(PlayerCommand command) {
+            bool move = _PlayerMove(command);
+            if (move)
+            {
+                UpdateVisits();
+                PlayerPawn.MovePoints = 0;
+                Think();
+            }
+            return move;
+        }
+
+        /// <summary>
+        /// Переместить игрока в указанном направлении
+        /// </summary>
+        /// <param name="dir_x"></param>
+        /// <param name="dir_y"></param>
+        /// <returns></returns>
+        public bool PlayerMove(int dir_x, int dir_y) {
+            bool move = _PlayerMove(dir_x, dir_y);
+            if (move)
+            {
+                UpdateVisits();
+                PlayerPawn.MovePoints = 0;
+                Think();
+            }
+            return move;
+        }
+
+        private bool _PlayerMove(int dir_x, int dir_y)
+        {
+            bool move = MoveActor(PlayerPawn, dir_x, dir_y);
+            if (move)
+            {
+                /*PlayerPawn.MovePoints = 0;
+                Think();*/
+                // Если мы не в бою, то попробуем подобрать что-нибудь
+                PlayerMove(PlayerCommand.PickupItem);
+            }
+            return move;
+        }
+
+        private bool _PlayerMove(PlayerCommand command)
         {
             // Исходя из команды, выполнить то или иное действие.
             // Если команда пройдёт успешно, то исчерпать запасы стамины и гонять Think, пока она не восстановится
             // Перемещение: 
-            if ((int)command < (int)PlayerCommand.LadderDown)
+            if ((int)command < (int)PlayerCommand.Wait)
             {
                 int x = PlayerPawn.X, y = PlayerPawn.Y;
                 switch (command)
@@ -81,39 +122,26 @@ namespace LibDungeon
                     case PlayerCommand.Move315:
                         x++; y++;
                         break;
-                    case PlayerCommand.Wait:
-                        break;
                 }
 
-                if (CurrentLevel.Tiles[x, y].Solidity == Tile.SolidityType.Wall)
-                {
-                    // Если это дверь, то открыть её
-                    if (CurrentLevel.Tiles[x, y] is Door)
-                    {
-                        (CurrentLevel.Tiles[x, y] as Door).IsOpen = true;
-                        PlayerPawn.MovePoints = 0;
-                        Think();
-                        return true;
-                    }
-                    // Если стена, то упереться в неё и не засчитать ход
-                    return false;
-                }
-                // Иначе считаем, что клетка проходима (Floor)
-                // TODO: Проверить наличие актёров в клетке! Если они есть то атаковать их
-                PlayerPawn.X = x; PlayerPawn.Y = y;
-                PlayerPawn.MovePoints = 0;
-                Think();
-                // Если мы не в бою, то попробуем подобрать что-нибудь
-                PlayerMove(PlayerCommand.PickupItem);
+                return _PlayerMove(x, y);
+            }
+
+
+            if (command == PlayerCommand.Wait)
+            {
+                // Во время отдыха игрок должен быстрее регенерировать здоровье
+                //  и медленнее становиться голоднее
                 return true;
             }
+
             // Лестница
             if (command == PlayerCommand.LadderDown || command == PlayerCommand.LadderUp)
             {
-                if (!(CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y] is Ladder))
+                if (!(CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y] is Ladder))
                     return false;
 
-                Ladder ourpos = CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y] as Ladder;
+                Ladder ourpos = CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y] as Ladder;
                 int nextlevel = currentLevel + ((ourpos.Direction == Ladder.LadderDirection.Up) ? -1 : 1);
                 if (nextlevel < 0)
                     return false;
@@ -124,7 +152,7 @@ namespace LibDungeon
                     var newfloor = new DungeonFloor(
                         Spawner.Random.Next(currentLevel+2*10, 81), Spawner.Random.Next(currentLevel + 2 * 10, 81)
                     ); 
-                    floors.Add(newfloor);
+                    floors.Add(newfloor); newfloor.FloorActors.AddLast(PlayerPawn);
                     int lx = 0;
                     int ly = 0;
                     for (int i = 0; i < newfloor.Width; i++)
@@ -142,6 +170,7 @@ namespace LibDungeon
                         }
                     }
                     (newfloor.Tiles[lx, ly] as Ladder).LadderId = ourpos.LadderId;
+                    SendClientMessage(null, $"Вы спускаетесь на уровень {nextlevel}");
                 }
                 // Если он уже существует, то попытаться найти свободную лестницу, если не выйдет, то скинуть в случ.
                 // позицию.
@@ -190,12 +219,9 @@ namespace LibDungeon
                             }
                         } 
                     }
-                                    
-                    // TODO: Слать события с текстовыми сообщениями? Например "лестница обвалилась", если не удаётся
-                    // сгенерировать проход между двумя этажами
-                    //return false;
+                    SendClientMessage(null, $"Вы возвращаетесь на уровень {nextlevel}");
                 }
-                
+
                 currentLevel = nextlevel;
                 return true;
             }
@@ -203,17 +229,32 @@ namespace LibDungeon
             // Поднятие предмета
             if (command == PlayerCommand.PickupItem)
             {
-                var item = CurrentLevel.FloorItems.FirstOrDefault(x => x.X == PlayerPawn.X && x.Y == PlayerPawn.Y);
+                var item = CurrentFloor.FloorItems.FirstOrDefault(x => x.X == PlayerPawn.X && x.Y == PlayerPawn.Y);
                 if (item == null)
                     return false;
 
-                CurrentLevel.FloorItems.Remove(item);
+                CurrentFloor.FloorItems.Remove(item);
                 if (item.RemoveOnPickup)
                     item.Use(PlayerPawn);
                 else
                     Inventory.AddLast(item);
                 return true;
             }
+
+            // Открытие / закрытие дверей
+            if (command == PlayerCommand.OpenDoor || command == PlayerCommand.CloseDoor)
+            {
+                for (int i = PlayerPawn.X - 1; i <= PlayerPawn.X + 1; i++)
+                    for (int j = PlayerPawn.Y - 1; j <= PlayerPawn.Y + 1; j++)
+                        if (CurrentFloor.Tiles[i, j] is Door)
+                        {
+                            (CurrentFloor.Tiles[i, j] as Door).IsOpen =
+                                (command == PlayerCommand.OpenDoor) ? true : false;
+                            return true;
+                        }
+                return false;
+            }
+
             return false;
         }
 
@@ -234,27 +275,27 @@ namespace LibDungeon
         [Placeholder]
         internal void UpdateVisits()
         {
-            foreach (var t in CurrentLevel.Tiles)
+            foreach (var t in CurrentFloor.Tiles)
                 t.Visible = false;
 
-            var tile = CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y];
+            var tile = CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y];
             if (tile.Solidity != Tile.SolidityType.Floor)
                 return;
 
             List<(int, int)> border = new List<(int, int)>() 
                 { (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1) };
-            CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y].Visited = true;
+            CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y].Visited = true;
             Queue<(int, int)> visq = new Queue<(int, int)>(); 
             visq.Enqueue((PlayerPawn.X, PlayerPawn.Y));
             while (visq.Count > 0)
             {
                 var node = visq.Dequeue();
                 foreach (var neigh in border.Select(x => (x.Item1 + node.Item1, x.Item2 + node.Item2)))
-                    if (!CurrentLevel.Tiles[neigh.Item1, neigh.Item2].Visible
+                    if (!CurrentFloor.Tiles[neigh.Item1, neigh.Item2].Visible
                         && (neigh.Item1 - PlayerPawn.X)* (neigh.Item1 - PlayerPawn.X) + (neigh.Item2 - PlayerPawn.Y)* (neigh.Item2 - PlayerPawn.Y) < 64)
                     {
-                        CurrentLevel.Tiles[neigh.Item1, neigh.Item2].Visible = true;
-                        if (CurrentLevel.Tiles[neigh.Item1, neigh.Item2].Solidity == Tile.SolidityType.Floor)
+                        CurrentFloor.Tiles[neigh.Item1, neigh.Item2].Visible = true;
+                        if (CurrentFloor.Tiles[neigh.Item1, neigh.Item2].Solidity == Tile.SolidityType.Floor)
                             visq.Enqueue(neigh);
                     }
             }

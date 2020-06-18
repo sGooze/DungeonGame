@@ -94,6 +94,11 @@ namespace DungeonTest
                     cmd = LibDungeon.Dungeon.PlayerCommand.LadderUp;
                     break;
 
+                case Keys.D:
+                    cmd = (e.Shift) 
+                        ? LibDungeon.Dungeon.PlayerCommand.OpenDoor : LibDungeon.Dungeon.PlayerCommand.CloseDoor;
+                    break;
+
                 case Keys.F10:
                     Close();
                     return;

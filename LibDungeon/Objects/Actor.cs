@@ -15,7 +15,7 @@ namespace LibDungeon.Objects
         public int X { get; set; }
         public int Y { get; set; }
         public int Health { get; set; }
-        public int Attack { get; set; }
+        public int MeleeDamage { get; set; }
         // Статы
 
 
@@ -39,6 +39,8 @@ namespace LibDungeon.Objects
         /// </summary>
         public abstract ThoughtTypeEnum Think(Actor hostile);
 
+        public abstract void MeleeAttack(Actor target);
+
         public void ChangePos(int x, int y)
         {
             X = x;
@@ -61,6 +63,7 @@ namespace LibDungeon.Objects
     {
         Dead,
         Stand,
+        Wander,
         AttackPlayer,
         RunAway
     }
@@ -74,7 +77,9 @@ namespace LibDungeon.Objects
     [Spawnable("char")]
     public class Char : Actor
     {
-        public override string Name => "Персонаж";
+        public string CharName { get; set; } = "Персонаж";
+
+        public override string Name => CharName;
 
         bool enraged = false;
         public override ThoughtTypeEnum Think(Actor hostile)
@@ -93,10 +98,16 @@ namespace LibDungeon.Objects
             return ThoughtTypeEnum.Stand;
         }
 
+        public override void MeleeAttack(Actor target)
+        {
+            Dungeon.SendClientMessage(this, $"{Name} атакует {target.Name}");
+            return;
+        }
+
         public Char()
         {
             Health = 10;
-            Attack = 2;
+            MeleeDamage = 2;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 4;

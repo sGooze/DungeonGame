@@ -48,7 +48,8 @@ namespace LibDungeon
         List<Level> floors = new List<Level>();
         int currentLevel = 0;
 
-        public Level CurrentLevel { get => floors[currentLevel]; }
+        public int CurrentLevel => currentLevel;
+        public Level CurrentFloor { get => floors[currentLevel]; }
 
         public Dungeon()
         {
@@ -75,14 +76,15 @@ namespace LibDungeon
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
             floors.Add(new DungeonFloor(35, 35)); // Первый уровень поменьше остальных
-            PlayerPawn = new Char();
+            PlayerPawn = new Char() { CharName = "чел)" };
             PlayerPawn.MaxMovePoints = 2; // Делаем игрока чуть быстрее остальных
-            while (CurrentLevel.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
+            while (CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень
-                PlayerPawn.X = Spawner.Random.Next(0, CurrentLevel.Width);
-                PlayerPawn.Y = Spawner.Random.Next(0, CurrentLevel.Height);
+                PlayerPawn.X = Spawner.Random.Next(0, CurrentFloor.Width);
+                PlayerPawn.Y = Spawner.Random.Next(0, CurrentFloor.Height);
             }
+            CurrentFloor.FloorActors.AddLast(PlayerPawn);
             UpdateVisits();
         }
 

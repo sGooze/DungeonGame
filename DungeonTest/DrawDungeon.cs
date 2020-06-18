@@ -63,7 +63,6 @@ namespace DungeonTest
                     }
                 }
             }
-            g.FillRectangle(Brushes.Aqua, borderX, borderY, 32, 32);
 
             foreach (var item in floor.FloorItems)
             {
@@ -83,6 +82,7 @@ namespace DungeonTest
                     g.FillRectangle(Brushes.OrangeRed, screenX + borderX, screenY + borderY, 32, 32);
             }
 
+            g.DrawRectangle(Pens.White, borderX, borderY, 32, 32);
 
         }
     }
@@ -99,7 +99,7 @@ namespace DungeonTest
             var graph = e.Graphics;
             graph.Clear(Color.Black);
             //floor.Draw(graph);
-            (Dungeon.CurrentLevel as DungeonFloor).Draw(Dungeon.PlayerPawn, pictureBox1.Size, graph);
+            (Dungeon.CurrentFloor as DungeonFloor).Draw(Dungeon.PlayerPawn, pictureBox1.Size, graph);
             //graph.FillRectangle(Brushes.Aqua, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10, 10, 10);
             //graph.DrawString("@", SystemFonts.DefaultFont,
             //    Brushes.Black, Dungeon.PlayerPawn.X * 10, Dungeon.PlayerPawn.Y * 10);
