@@ -11,12 +11,21 @@ namespace LibDungeon.Objects
     public abstract class Actor
     {
         private int movePoints;
+        private int health;
 
         public int X { get; set; }
         public int Y { get; set; }
-        public int Health { get; set; }
-        public int MeleeDamage { get; set; }
         // Статы
+        public int Health { get => health; set => health = Math.Max(Math.Min(value, MaxHealth),0); }
+        public int MaxHealth { get; set; }
+        public int MeleeDamage { get; set; }
+
+        // Скиллы
+
+        /// <summary>
+        /// Определяет вероятность того, что атака будет успешной
+        /// </summary>
+        public int MeleeSkill { get; set; }
 
 
         // Состояние
@@ -39,7 +48,39 @@ namespace LibDungeon.Objects
         /// </summary>
         public abstract ThoughtTypeEnum Think(Actor hostile);
 
-        public abstract void MeleeAttack(Actor target);
+
+
+
+        public virtual void MeleeAttack(Actor target)
+        {
+            Dungeon.SendClientMessage(this, $"{Name} атакует {target.Name}");
+            if (Spawner.DistanceSqr(this, target) > 2)
+            {
+                Dungeon.SendClientMessage(this, $"{Name} не может атаковать {target.Name}");
+                return;
+            }
+            int chance = Spawner.Random.Next(0, 10);
+            if (chance > MeleeSkill)
+            {
+                Dungeon.SendClientMessage(this, $"{Name} промахивается!");
+                return;
+            }
+            int damage = Spawner.Random.Next(MeleeSkill / 2, MeleeSkill * 2);
+            if (chance == 0)
+            {
+                damage = (int)(MeleeSkill * 2.5);
+                Dungeon.SendClientMessage(this, $"{Name} наносит сокрушительный урон {MeleeSkill * 2.5}!");
+            }
+            else
+            {
+                Dungeon.SendClientMessage(this, $"{Name} наносит урон {damage}");
+            }
+            target.Health -= damage;
+            if (target.Health == 0)
+                Dungeon.SendClientMessage(this, $"{target.Name} умирает");
+
+            return;
+        }
 
         public void ChangePos(int x, int y)
         {
@@ -90,7 +131,7 @@ namespace LibDungeon.Objects
                 return ThoughtTypeEnum.Stand;
 
             if (enraged) return ThoughtTypeEnum.AttackPlayer;
-            if (Math.Pow(X - hostile.X, 2) + Math.Pow(Y - hostile.Y, 2) <= 36 && !enraged)
+            if (Spawner.Distance(this, hostile) <= 6 && !enraged)
             {
                 Dungeon.SendClientMessage(this, $"{Name}: Я вижу тебя! Ты на {hostile.X},{hostile.Y}");
                 enraged = true;
@@ -98,19 +139,41 @@ namespace LibDungeon.Objects
             return ThoughtTypeEnum.Stand;
         }
 
-        public override void MeleeAttack(Actor target)
-        {
-            Dungeon.SendClientMessage(this, $"{Name} атакует {target.Name}");
-            return;
-        }
 
         public Char()
         {
+            MaxHealth = 10;
             Health = 10;
             MeleeDamage = 2;
+            MeleeSkill = 5;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 4;
+            MovePoints = MaxMovePoints;
+        }
+    }
+
+    public class KnightClass : Actor
+    {
+        public string CName { get; set; }
+        public override string Name => CName;
+
+        public override ThoughtTypeEnum Think(Actor hostile)
+        {
+            return (Health > 0) ? ThoughtTypeEnum.Dead : ThoughtTypeEnum.Wander;
+        }
+
+        public KnightClass()
+        {
+            CName = "Мистер Прикол";
+
+            MaxHealth = 25;
+            Health = 25;
+            MeleeDamage = 5;
+            MeleeSkill = 7;
+            MoveType = MoveTypeEnum.Walking;
+            Thoughts = ThoughtTypeEnum.Stand;
+            MaxMovePoints = 2;
             MovePoints = MaxMovePoints;
         }
     }

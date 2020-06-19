@@ -79,7 +79,8 @@ namespace DungeonTest
                     screenY = (actor.Y - player.Y) * 32;
                 if (floor.Tiles[actor.X, actor.Y].Visible &&
                     (Math.Abs(screenX) < borderX && Math.Abs(screenY) < borderY))
-                    g.FillRectangle(Brushes.OrangeRed, screenX + borderX, screenY + borderY, 32, 32);
+                    g.FillRectangle((actor.Health > 0) ? Brushes.Green : Brushes.Red, 
+                        screenX + borderX, screenY + borderY, 32, 32);
             }
 
             g.DrawRectangle(Pens.White, borderX, borderY, 32, 32);

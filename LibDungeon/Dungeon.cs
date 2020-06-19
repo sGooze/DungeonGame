@@ -35,6 +35,15 @@ namespace LibDungeon
             return sactor;
         }
 
+        internal static double Distance(int x1, int y1, int x2, int y2) 
+            => Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
+
+        internal static double Distance(Actor a, Actor b) => Distance(a.X, a.Y, b.X, b.Y);
+
+        internal static double DistanceSqr(int x1, int y1, int x2, int y2)
+            => (Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
+
+        internal static double DistanceSqr(Actor a, Actor b) => DistanceSqr(a.X, a.Y, b.X, b.Y);
     }
 
     /// <summary>
@@ -76,8 +85,7 @@ namespace LibDungeon
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
             floors.Add(new DungeonFloor(35, 35)); // Первый уровень поменьше остальных
-            PlayerPawn = new Char() { CharName = "чел)" };
-            PlayerPawn.MaxMovePoints = 2; // Делаем игрока чуть быстрее остальных
+            PlayerPawn = new KnightClass();
             while (CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень

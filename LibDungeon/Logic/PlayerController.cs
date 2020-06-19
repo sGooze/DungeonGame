@@ -48,6 +48,8 @@ namespace LibDungeon
         /// <code>true</code>, если действие принято и ход засчитан, <code>false</code> в обратном случае.
         /// </returns>
         public bool PlayerMove(PlayerCommand command) {
+            if (PlayerPawn.Health == 0)
+                return true;
             bool move = _PlayerMove(command);
             if (move)
             {
@@ -65,6 +67,8 @@ namespace LibDungeon
         /// <param name="dir_y"></param>
         /// <returns></returns>
         public bool PlayerMove(int dir_x, int dir_y) {
+            if (PlayerPawn.Health == 0)
+                return true;
             bool move = _PlayerMove(dir_x, dir_y);
             if (move)
             {

@@ -24,8 +24,8 @@ namespace LibDungeon
             {
                 foreach (var actor in CurrentFloor.FloorActors)
                 {
-                    /*if (actor == PlayerPawn)
-                        continue;*/
+                    if (actor == PlayerPawn)
+                        continue;
                     if (actor.MovePoints < actor.MaxMovePoints && actor != PlayerPawn)
                     {
                         actor.MovePoints++;
@@ -84,7 +84,7 @@ namespace LibDungeon
                 return false;
             }
             // Проверка на столкновение с актёром
-            var occupant = CurrentFloor.FloorActors.FirstOrDefault(a => a.X == x && a.Y == y);
+            var occupant = CurrentFloor.FloorActors.FirstOrDefault(a => a.X == x && a.Y == y && a.Health > 0);
             if (occupant != null)
             {
                 // Актёры могут атаковать только игрока
