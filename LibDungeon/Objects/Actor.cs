@@ -16,6 +16,8 @@ namespace LibDungeon.Objects
         private int hungerRate = 0;
         public const int maxHunger = 2000;
 
+        public int Score { get; set; } = 1;
+
         public int X { get; set; }
         public int Y { get; set; }
         // Статы
@@ -100,7 +102,11 @@ namespace LibDungeon.Objects
             }
             target.Health -= damage;
             if (target.Health == 0)
+            {
                 Dungeon.SendClientMessage(this, $"{target.Name} умирает");
+                Score += target.Score;
+                //Dungeon.SendClientMessage(this, $"{Name} получает {target.Score} очков");
+            }
 
             return;
         }
@@ -151,7 +157,17 @@ namespace LibDungeon.Objects
     [Spawnable("char")]
     public class Char : Actor
     {
-        public string CharName { get; set; } = "Персонаж";
+        string[] names = new string[]
+        {
+            "Старый бандит",
+            "Разбойник",
+            "Одноглазый бандит",
+            "Наёмник",
+            "Расхититель гробниц",
+            "Бандит"
+        };
+
+        public string CharName { get; set; } = "Бандит";
 
         public override string Name => CharName;
 
@@ -163,15 +179,23 @@ namespace LibDungeon.Objects
             if (hostile == this)
                 return ThoughtTypeEnum.Stand;
 
-            if (enraged) return ThoughtTypeEnum.AttackPlayer;
+            if (enraged)
+            {
+                if (Health < MaxHealth / 3)
+                {
+                    if (Spawner.Random.Next(0, 3) == 0)
+                        Dungeon.SendClientMessage(this, $"{Name}: Нет! Пощадите меня!");
+                    return ThoughtTypeEnum.RunAway;
+                }
+                return ThoughtTypeEnum.AttackPlayer;
+            }
             if (Spawner.Distance(this, hostile) <= 6 && !enraged)
             {
-                Dungeon.SendClientMessage(this, $"{Name}: Попался!");
+                Dungeon.SendClientMessage(this, $"{Name}: Попался! Пощады не жди!");
                 enraged = true;
             }
             return ThoughtTypeEnum.Stand;
         }
-
 
         public Char()
         {
@@ -181,10 +205,92 @@ namespace LibDungeon.Objects
             MeleeSkill = 5;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
+            MaxMovePoints = 3;
+            MovePoints = MaxMovePoints;
+            Score = 50;
+
+            CharName = names[Spawner.Random.Next(0, names.Length)];
+        }
+
+    }
+
+    [Spawnable("spider")]
+    public class Spider : Actor
+    {
+        public string CharName { get; set; } = "Гигантский паук";
+
+        public override string Name => CharName;
+
+        bool enraged = false;
+        protected override ThoughtTypeEnum _Think(Actor hostile)
+        {
+            if (Health == 0)
+                return ThoughtTypeEnum.Dead;
+            if (hostile == this)
+                return ThoughtTypeEnum.Stand;
+
+            if (enraged)
+            {
+                return ThoughtTypeEnum.AttackPlayer;
+            }
+            if (Spawner.Distance(this, hostile) <= 6 && !enraged)
+            {
+                Dungeon.SendClientMessage(this, $"{Name} страшно шипит");
+                enraged = true;
+            }
+            return ThoughtTypeEnum.Stand;
+        }
+
+
+        public Spider()
+        {
+            MaxHealth = 5;
+            Health = 5;
+            MeleeDamage = 3;
+            MeleeSkill = 5;
+            MoveType = MoveTypeEnum.Walking;
+            Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 4;
             MovePoints = MaxMovePoints;
+            Score = 25;
         }
     }
+
+    [Spawnable("zombie")]
+    public class Zombie : Actor
+    {
+        public override string Name => "Безмозглый зомби";
+
+        protected override ThoughtTypeEnum _Think(Actor hostile)
+        {
+            if (Health == 0)
+                return ThoughtTypeEnum.Dead;
+            if (hostile == this)
+                return ThoughtTypeEnum.Stand;
+
+            if (Spawner.Distance(this, hostile) <= 6 && Spawner.Random.Next(0, 2) == 0)
+                Dungeon.SendClientMessage(this, $"{Name} тихо стонет");
+
+            return (Spawner.Random.Next(0,2) == 0) ? ThoughtTypeEnum.Stand : ThoughtTypeEnum.Wander;
+        }
+
+        public Zombie()
+        {
+            MaxHealth = 5;
+            Health = 5;
+            MeleeDamage = 3;
+            MeleeSkill = 5;
+            MoveType = MoveTypeEnum.Walking;
+            Thoughts = ThoughtTypeEnum.Wander;
+            MaxMovePoints = 4;
+            MovePoints = MaxMovePoints;
+            Score = 10;
+        }
+    }
+
+
+
+
 
     [PlayerClass(
         "Рыцарь", Description = "Сбалансированный класс для начинающих", StartingInventory = "food;food;sword"

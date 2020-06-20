@@ -127,8 +127,14 @@ namespace DungeonTest
 
         private void FormUpdate()
         {
-            if (Dungeon.PlayerPawn.Health == 0 && (!StartNewGame()))
-                return;
+            if (Dungeon.PlayerPawn.Health == 0) {
+                if (MessageBox.Show($"Вы погибли! Ваш итоговый счёт: {Dungeon.PlayerPawn.Score} очков. Желаете сыграть ещё раз?",
+                    "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    StartNewGame();
+                }
+                else return;
+            }
 
             lblName.Text = Dungeon.PlayerPawn.Name;
             lblHealth.Text = $"{Dungeon.PlayerPawn.Health}/{Dungeon.PlayerPawn.MaxHealth}";
