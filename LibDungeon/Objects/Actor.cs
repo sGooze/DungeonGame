@@ -14,6 +14,7 @@ namespace LibDungeon.Objects
         private int health;
         private int hunger = 0;
         private int hungerRate = 0;
+        public const int maxHunger = 2000;
 
         public int X { get; set; }
         public int Y { get; set; }
@@ -26,7 +27,7 @@ namespace LibDungeon.Objects
         /// <summary>
         /// Уровень голода (от 0 до 100)
         /// </summary>
-        public int Hunger { get => hunger; set => hunger = Spawner.Clamp(0, value, 100); }
+        public int Hunger { get => hunger; set => hunger = Spawner.Clamp(0, value, maxHunger); }
 
         /// <summary>
         /// Насколько голод увеличивается с каждым ходом (для голодающих актёров (игрока))
@@ -41,7 +42,13 @@ namespace LibDungeon.Objects
 
 
         // Состояние
+        /// <summary>
+        /// Вид перемещения актёра
+        /// </summary>
         public MoveTypeEnum MoveType { get; set; }
+        /// <summary>
+        /// Последняя мысль актёра
+        /// </summary>
         public ThoughtTypeEnum Thoughts { get; set; }
 
 
@@ -58,9 +65,13 @@ namespace LibDungeon.Objects
         /// <summary>
         /// Определяет дальнейшие действия
         /// </summary>
-        public abstract ThoughtTypeEnum Think(Actor hostile);
+        protected abstract ThoughtTypeEnum _Think(Actor hostile);
 
-
+        public ThoughtTypeEnum Think(Actor hostile)
+        {
+            Thoughts = _Think(hostile);
+            return Thoughts;
+        }
 
 
         public virtual void MeleeAttack(Actor target)
@@ -135,7 +146,7 @@ namespace LibDungeon.Objects
         public override string Name => CharName;
 
         bool enraged = false;
-        public override ThoughtTypeEnum Think(Actor hostile)
+        protected override ThoughtTypeEnum _Think(Actor hostile)
         {
             if (Health == 0)
                 return ThoughtTypeEnum.Dead;
@@ -158,7 +169,6 @@ namespace LibDungeon.Objects
             Health = 10;
             MeleeDamage = 2;
             MeleeSkill = 5;
-            HungerRate = 1;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 4;
@@ -171,7 +181,7 @@ namespace LibDungeon.Objects
         public string CName { get; set; }
         public override string Name => CName;
 
-        public override ThoughtTypeEnum Think(Actor hostile)
+        protected override ThoughtTypeEnum _Think(Actor hostile)
         {
             return (Health > 0) ? ThoughtTypeEnum.Dead : ThoughtTypeEnum.Wander;
         }
@@ -179,6 +189,7 @@ namespace LibDungeon.Objects
         public KnightClass()
         {
             CName = "Мистер Прикол";
+            HungerRate = 1;
 
             MaxHealth = 25;
             Health = 25;

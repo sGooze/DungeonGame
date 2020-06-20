@@ -24,6 +24,7 @@ namespace LibDungeon
             {
                 foreach (var actor in CurrentFloor.FloorActors)
                 {
+                    Hunger(actor);
                     if (actor == PlayerPawn)
                         continue;
                     if (actor.MovePoints < actor.MaxMovePoints && actor != PlayerPawn)
@@ -64,6 +65,37 @@ namespace LibDungeon
                     actor.MovePoints = 0;
                 }
             }
+        }
+
+        /// <summary>
+        /// Воздействие голода и регенерации здоровья
+        /// </summary>
+        /// <param name="actor"></param>
+        private void Hunger(Actor actor)
+        {
+            // Некоторые персонажи не испытывают голода и не должны подвергаться его эффектам
+            if (actor.HungerRate == 0 || actor.Health == 0)
+                return;
+            // Неподвижные актёры медленнее становятся голоднее
+            // Подвижные актёры, несущие в экипировке много предметров, быстрее становятся голоднее
+            int hungerRate = (actor.Thoughts == ThoughtTypeEnum.Stand) 
+                ? Math.Max(1, actor.HungerRate / 2) 
+                : actor.HungerRate + (actor.Equipment.Count / (2 * actor.MaxMovePoints) );
+
+            actor.Hunger += hungerRate;
+
+            // Восстановление здоровья: чем голоднее актёр, тем медленнее оно регенерирует
+            int healRate = (actor.Hunger/(Actor.maxHunger / 4) + 1)
+                * actor.MaxMovePoints       // Скорость восстановления зависит от быстроты действий актёра
+                * 5                         // И искусственно замедляется во столько раз
+                ;
+            if (actor.Hunger == Actor.maxHunger)
+            {
+                SendClientMessage(null, $"{actor.Name} умер от голода");
+                actor.Health = 0;
+            }
+            else if (actor.Hunger % (healRate) == 0)
+                actor.Health += 1;
         }
 
         public bool MoveActor(Actor actor, int dir_x, int dir_y)

@@ -29,6 +29,7 @@ namespace DungeonTest
             LibDungeon.Dungeon.ClientMessageSent += Dungeon_ClientMessageSent;
 
             ClientSize = new Size(80 * 10, 80 * 10);
+            FormUpdate();
         }
 
         private void Dungeon_ClientMessageSent(object sender, string e)
@@ -116,6 +117,13 @@ namespace DungeonTest
 
         private void FormUpdate()
         {
+            lblName.Text = Dungeon.PlayerPawn.Name;
+            lblHealth.Text = $"{Dungeon.PlayerPawn.Health}/{Dungeon.PlayerPawn.MaxHealth}";
+            lblHunger.Text = $"{Dungeon.PlayerPawn.Hunger}/{Actor.maxHunger}";
+
+            barHealth.Maximum = Dungeon.PlayerPawn.MaxHealth;
+            barHealth.Value = Dungeon.PlayerPawn.Health;
+
             lbInventory.Items.Clear();
             lbEquipment.Items.Clear();
             lbInventory.Items.AddRange(Dungeon.PlayerPawn.Inventory.ToArray());
