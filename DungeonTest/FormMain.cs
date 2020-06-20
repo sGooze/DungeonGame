@@ -140,6 +140,7 @@ namespace DungeonTest
             lblHealth.Text = $"{Dungeon.PlayerPawn.Health}/{Dungeon.PlayerPawn.MaxHealth}";
             lblLevel.Text = $"Этаж {Dungeon.CurrentLevel + 1}";
             lblHunger.Text = $"Голод: {Dungeon.PlayerPawn.Hunger}/{Actor.maxHunger}";
+            lblPoints.Text = $"Очки: {Dungeon.PlayerPawn.Score}";
 
             barHealth.Maximum = Dungeon.PlayerPawn.MaxHealth;
             barHealth.Value = Dungeon.PlayerPawn.Health;

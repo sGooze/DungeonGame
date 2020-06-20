@@ -32,6 +32,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblLevel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,7 +46,7 @@
             this.barHealth = new System.Windows.Forms.ProgressBar();
             this.lblName = new System.Windows.Forms.Label();
             this.txtMessages = new System.Windows.Forms.TextBox();
-            this.lblLevel = new System.Windows.Forms.Label();
+            this.lblPoints = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -73,6 +74,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lblPoints);
             this.panel1.Controls.Add(this.lblLevel);
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.lblHunger);
@@ -83,6 +85,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 484);
             this.panel1.TabIndex = 1;
+            // 
+            // lblLevel
+            // 
+            this.lblLevel.AutoSize = true;
+            this.lblLevel.Location = new System.Drawing.Point(12, 25);
+            this.lblLevel.Name = "lblLevel";
+            this.lblLevel.Size = new System.Drawing.Size(61, 13);
+            this.lblLevel.TabIndex = 7;
+            this.lblLevel.Text = "Уровень X";
             // 
             // groupBox2
             // 
@@ -221,14 +232,14 @@
             this.txtMessages.Size = new System.Drawing.Size(415, 122);
             this.txtMessages.TabIndex = 2;
             // 
-            // lblLevel
+            // lblPoints
             // 
-            this.lblLevel.AutoSize = true;
-            this.lblLevel.Location = new System.Drawing.Point(12, 25);
-            this.lblLevel.Name = "lblLevel";
-            this.lblLevel.Size = new System.Drawing.Size(61, 13);
-            this.lblLevel.TabIndex = 7;
-            this.lblLevel.Text = "Уровень X";
+            this.lblPoints.AutoSize = true;
+            this.lblPoints.Location = new System.Drawing.Point(12, 51);
+            this.lblPoints.Name = "lblPoints";
+            this.lblPoints.Size = new System.Drawing.Size(35, 13);
+            this.lblPoints.TabIndex = 8;
+            this.lblPoints.Text = "label1";
             // 
             // FormMain
             // 
@@ -273,6 +284,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblHealth;
         private System.Windows.Forms.Label lblLevel;
+        private System.Windows.Forms.Label lblPoints;
     }
 }
 

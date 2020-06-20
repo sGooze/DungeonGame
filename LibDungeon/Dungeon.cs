@@ -126,6 +126,8 @@ namespace LibDungeon
                 }
             }
 
+            PlayerPawn.Score = 0;
+
             while (CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень
