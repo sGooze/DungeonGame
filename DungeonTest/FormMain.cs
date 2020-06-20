@@ -25,11 +25,21 @@ namespace DungeonTest
         {
             InitializeComponent();
 
-            Dungeon = new LibDungeon.Dungeon();
             LibDungeon.Dungeon.ClientMessageSent += Dungeon_ClientMessageSent;
 
             ClientSize = new Size(80 * 10, 80 * 10);
+        }
+
+        public bool StartNewGame()
+        {
+            var dlg = new FormNewGame();
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return false;
+            txtMessages.Clear();
+            Dungeon = new LibDungeon.Dungeon();
+            Dungeon.SpawnPlayer(dlg.PlayerClass, dlg.PlayerSubclassId, dlg.PlayerName);
             FormUpdate();
+            return true;
         }
 
         private void Dungeon_ClientMessageSent(object sender, string e)
@@ -117,9 +127,13 @@ namespace DungeonTest
 
         private void FormUpdate()
         {
+            if (Dungeon.PlayerPawn.Health == 0 && (!StartNewGame()))
+                return;
+
             lblName.Text = Dungeon.PlayerPawn.Name;
             lblHealth.Text = $"{Dungeon.PlayerPawn.Health}/{Dungeon.PlayerPawn.MaxHealth}";
-            lblHunger.Text = $"{Dungeon.PlayerPawn.Hunger}/{Actor.maxHunger}";
+            lblLevel.Text = $"Этаж {Dungeon.CurrentLevel + 1}";
+            lblHunger.Text = $"Голод: {Dungeon.PlayerPawn.Hunger}/{Actor.maxHunger}";
 
             barHealth.Maximum = Dungeon.PlayerPawn.MaxHealth;
             barHealth.Value = Dungeon.PlayerPawn.Health;
@@ -164,6 +178,12 @@ namespace DungeonTest
                 Dungeon.PlayerMove(LibDungeon.Dungeon.PlayerCommand.EquipItem);
             }
             FormUpdate();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            if (!StartNewGame())
+                Close();
         }
     }
 }

@@ -45,6 +45,7 @@
             this.barHealth = new System.Windows.Forms.ProgressBar();
             this.lblName = new System.Windows.Forms.Label();
             this.txtMessages = new System.Windows.Forms.TextBox();
+            this.lblLevel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -72,6 +73,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lblLevel);
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.lblHunger);
             this.panel1.Controls.Add(this.groupBox1);
@@ -92,9 +94,9 @@
             this.groupBox2.Controls.Add(this.lbInventory);
             this.groupBox2.Controls.Add(this.btnEquip);
             this.groupBox2.Controls.Add(this.btnDispose);
-            this.groupBox2.Location = new System.Drawing.Point(12, 102);
+            this.groupBox2.Location = new System.Drawing.Point(12, 135);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(182, 370);
+            this.groupBox2.Size = new System.Drawing.Size(182, 337);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Инвентарь";
@@ -133,14 +135,14 @@
             this.lbInventory.FormattingEnabled = true;
             this.lbInventory.Location = new System.Drawing.Point(3, 107);
             this.lbInventory.Name = "lbInventory";
-            this.lbInventory.Size = new System.Drawing.Size(170, 225);
+            this.lbInventory.Size = new System.Drawing.Size(170, 186);
             this.lbInventory.TabIndex = 1;
             this.lbInventory.SelectedIndexChanged += new System.EventHandler(this.lbInventory_SelectedIndexChanged);
             // 
             // btnEquip
             // 
             this.btnEquip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEquip.Location = new System.Drawing.Point(3, 338);
+            this.btnEquip.Location = new System.Drawing.Point(3, 305);
             this.btnEquip.Name = "btnEquip";
             this.btnEquip.Size = new System.Drawing.Size(75, 23);
             this.btnEquip.TabIndex = 3;
@@ -151,7 +153,7 @@
             // btnDispose
             // 
             this.btnDispose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDispose.Location = new System.Drawing.Point(98, 338);
+            this.btnDispose.Location = new System.Drawing.Point(98, 305);
             this.btnDispose.Name = "btnDispose";
             this.btnDispose.Size = new System.Drawing.Size(75, 23);
             this.btnDispose.TabIndex = 4;
@@ -162,7 +164,7 @@
             // lblHunger
             // 
             this.lblHunger.AutoSize = true;
-            this.lblHunger.Location = new System.Drawing.Point(12, 25);
+            this.lblHunger.Location = new System.Drawing.Point(12, 38);
             this.lblHunger.Name = "lblHunger";
             this.lblHunger.Size = new System.Drawing.Size(46, 13);
             this.lblHunger.TabIndex = 3;
@@ -172,7 +174,7 @@
             // 
             this.groupBox1.Controls.Add(this.lblHealth);
             this.groupBox1.Controls.Add(this.barHealth);
-            this.groupBox1.Location = new System.Drawing.Point(12, 41);
+            this.groupBox1.Location = new System.Drawing.Point(12, 83);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(185, 46);
             this.groupBox1.TabIndex = 5;
@@ -219,6 +221,15 @@
             this.txtMessages.Size = new System.Drawing.Size(415, 122);
             this.txtMessages.TabIndex = 2;
             // 
+            // lblLevel
+            // 
+            this.lblLevel.AutoSize = true;
+            this.lblLevel.Location = new System.Drawing.Point(12, 25);
+            this.lblLevel.Name = "lblLevel";
+            this.lblLevel.Size = new System.Drawing.Size(61, 13);
+            this.lblLevel.TabIndex = 7;
+            this.lblLevel.Text = "Уровень X";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -230,6 +241,7 @@
             this.KeyPreview = true;
             this.Name = "FormMain";
             this.Text = "♂ Dungeon ♂";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PlayerKeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -260,6 +272,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblHealth;
+        private System.Windows.Forms.Label lblLevel;
     }
 }
 

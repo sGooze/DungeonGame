@@ -179,7 +179,8 @@ namespace LibDungeon
                         }
                     }
                     (newfloor.Tiles[lx, ly] as Ladder).LadderId = ourpos.LadderId;
-                    SendClientMessage(null, $"Вы спускаетесь на уровень {nextlevel}");
+                    SendClientMessage(null, 
+                        $"Вы {(nextlevel > CurrentLevel ? "спускаетесь" : "поднимаетесь")} на уровень {nextlevel+1}");
                 }
                 // Если он уже существует, то попытаться найти свободную лестницу, если не выйдет, то скинуть в случ.
                 // позицию.

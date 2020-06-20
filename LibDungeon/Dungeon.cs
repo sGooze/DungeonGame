@@ -16,6 +16,16 @@ namespace LibDungeon
 
         static Random random = new Random();
         public static Random Random { get => random; }
+
+
+        internal static BaseItem SpawnItem(string classname)
+        {
+            if (!Items.TryGetValue(classname, out Type meme))
+                return null;
+            return Activator.CreateInstance(meme) as BaseItem;
+        } 
+
+
         internal static BaseItem SpawnRandomItem(int x, int y) => SpawnRandomItem(x, y, int.MinValue, int.MaxValue);
         internal static BaseItem SpawnRandomItem(int coord_x, int coord_y, int minlevel, int maxlevel)
         {
@@ -92,7 +102,30 @@ namespace LibDungeon
                 .ToDictionary(x => (x.GetCustomAttribute<SpawnableAttribute>().Classname));
 
             floors.Add(new DungeonFloor(35, 35)); // Первый уровень поменьше остальных
-            PlayerPawn = new KnightClass();
+        }
+
+        public void SpawnPlayer(Type playerType, int subclassid, string name)
+        {
+            /*var player_classes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => x.IsDefined(typeof(PlayerClassAttribute)))
+                .Select(x => (x, x.GetCustomAttribute(typeof(PlayerClassAttribute)))).ToArray();*/
+
+            var atts = playerType.GetCustomAttributes(typeof(PlayerClassAttribute)).ToArray();
+            var att = atts[subclassid] as PlayerClassAttribute;
+
+            PlayerPawn = Activator.CreateInstance(playerType, new[] { name }) as Actor;
+
+            // Дать игроку стандартный инвентарь его класса
+            if (!String.IsNullOrWhiteSpace(att.StartingInventory))
+            {
+                foreach (var classname in att.StartingInventory.Split(';'))
+                {
+                    var item = Spawner.SpawnItem(classname);
+                    if (item != null)
+                        PlayerPawn.AddItem(item);
+                }
+            }
+
             while (CurrentFloor.Tiles[PlayerPawn.X, PlayerPawn.Y].Solidity != Tile.SolidityType.Floor)
             {
                 // Добавить игрока на первый уровень
@@ -101,6 +134,8 @@ namespace LibDungeon
             }
             CurrentFloor.FloorActors.AddLast(PlayerPawn);
             UpdateVisits();
+
+            SendClientMessage(null, $"{att.Name} {name}, добро пожаловать в подземелье");
         }
 
         public static event EventHandler<string> ClientMessageSent;

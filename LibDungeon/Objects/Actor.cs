@@ -132,7 +132,17 @@ namespace LibDungeon.Objects
         RunAway
     }
 
-
+    /// <summary>
+    /// Персонаж, доступный для выбора в качестве играбельного в начале игры
+    /// </summary>
+    [System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+    public sealed class PlayerClassAttribute : Attribute
+    {
+        public PlayerClassAttribute(string name) { Name = name; }
+        public string Name { get; private set; }
+        public string Description { get; set; }
+        public string StartingInventory { get; set; }
+    }
 
 
     /// <summary>
@@ -156,7 +166,7 @@ namespace LibDungeon.Objects
             if (enraged) return ThoughtTypeEnum.AttackPlayer;
             if (Spawner.Distance(this, hostile) <= 6 && !enraged)
             {
-                Dungeon.SendClientMessage(this, $"{Name}: Я вижу тебя! Ты на {hostile.X},{hostile.Y}");
+                Dungeon.SendClientMessage(this, $"{Name}: Попался!");
                 enraged = true;
             }
             return ThoughtTypeEnum.Stand;
@@ -176,6 +186,12 @@ namespace LibDungeon.Objects
         }
     }
 
+    [PlayerClass(
+        "Рыцарь", Description = "Сбалансированный класс для начинающих", StartingInventory = "food;food;sword"
+    )]
+    [PlayerClass(
+        "Бедный рыцарь", Description = "Несбалансированный класс для неначинающих"
+    )]
     public class KnightClass : Actor
     {
         public string CName { get; set; }
@@ -199,6 +215,11 @@ namespace LibDungeon.Objects
             Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 2;
             MovePoints = MaxMovePoints;
+        }
+
+        public KnightClass(string name) : this()
+        {
+            CName = name;
         }
     }
 }
