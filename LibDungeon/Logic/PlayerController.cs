@@ -32,6 +32,8 @@ namespace LibDungeon
             LadderUp,
 
             PickupItem,
+            EquipItem,
+            RemoveItem,
 
             OpenDoor,
             CloseDoor
@@ -238,10 +240,10 @@ namespace LibDungeon
                     return false;
 
                 CurrentFloor.FloorItems.Remove(item);
-                if (item.RemoveOnPickup)
+                /*if (item.RemoveOnPickup)
                     item.Use(PlayerPawn);
-                else
-                    Inventory.AddLast(item);
+                else*/
+                PlayerPawn.AddItem(item);
                 return true;
             }
 
@@ -258,6 +260,10 @@ namespace LibDungeon
                         }
                 return false;
             }
+            if (command == PlayerCommand.EquipItem || command == PlayerCommand.RemoveItem)
+            {
+                return true;
+            }
 
             return false;
         }
@@ -272,11 +278,9 @@ namespace LibDungeon
         /// </summary>
         public Actor PlayerPawn { get; set; }
 
-        // TODO: Всё временно, убрать!!!!
         /// <summary>
         /// Обновление списка посещённых (хотя бы единожды увиденных) тайлов
         /// </summary>
-        [Placeholder]
         internal void UpdateVisits()
         {
             foreach (var t in CurrentFloor.Tiles)
@@ -305,8 +309,6 @@ namespace LibDungeon
             }
         }
 
-
-        public LinkedList<BaseItem> Inventory { get; set; } = new LinkedList<BaseItem>();
 
     }
 }

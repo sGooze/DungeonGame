@@ -12,6 +12,7 @@ using LibDungeon.Levels;
 
 namespace DungeonTest
 {
+    using LibDungeon.Objects;
     //using Logic;
     using System.Runtime.CompilerServices;
 
@@ -116,7 +117,9 @@ namespace DungeonTest
         private void FormUpdate()
         {
             lbInventory.Items.Clear();
-            lbInventory.Items.AddRange(Dungeon.Inventory.ToArray());
+            lbEquipment.Items.Clear();
+            lbInventory.Items.AddRange(Dungeon.PlayerPawn.Inventory.ToArray());
+            lbEquipment.Items.AddRange(Dungeon.PlayerPawn.Equipment.ToArray());
             pictureBox1.Refresh();
         }
 
@@ -124,8 +127,34 @@ namespace DungeonTest
         {
             if (lbInventory.SelectedIndex == -1) 
                 return;
-            var item = (lbInventory.SelectedItem as LibDungeon.Objects.BaseItem);
-            Dungeon.Inventory.Remove(item);
+            var item = (lbInventory.SelectedItem as BaseItem);
+            Dungeon.PlayerPawn.Inventory.Remove(item);
+            FormUpdate();
+        }
+
+        private void lbInventory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lbEquipment.SelectedIndex = -1;
+        }
+
+        private void lbEquipment_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lbInventory.SelectedIndex = -1;
+        }
+
+        private void btnEquip_Click(object sender, EventArgs e)
+        {
+            if (lbEquipment.SelectedIndex != -1)
+            {
+                // Деактивировать предмет
+                Dungeon.PlayerPawn.UnuseItem(lbEquipment.SelectedItem as BaseItem);
+                Dungeon.PlayerMove(LibDungeon.Dungeon.PlayerCommand.RemoveItem);
+            }
+            else if (lbInventory.SelectedIndex != -1)
+            {
+                Dungeon.PlayerPawn.UseItem(lbInventory.SelectedItem as BaseItem);
+                Dungeon.PlayerMove(LibDungeon.Dungeon.PlayerCommand.EquipItem);
+            }
             FormUpdate();
         }
     }

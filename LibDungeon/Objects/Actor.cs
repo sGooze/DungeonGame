@@ -8,18 +8,30 @@ namespace LibDungeon.Objects
     /// <summary>
     /// Базовый класс для актёров
     /// </summary>
-    public abstract class Actor
+    public abstract partial class Actor
     {
         private int movePoints;
         private int health;
+        private int hunger = 0;
+        private int hungerRate = 0;
 
         public int X { get; set; }
         public int Y { get; set; }
         // Статы
-        public int Health { get => health; set => health = Math.Max(Math.Min(value, MaxHealth),0); }
+        public int Health { get => health; set => health = Spawner.Clamp(0, value, MaxHealth); }
         public int MaxHealth { get; set; }
         public int MeleeDamage { get; set; }
 
+        // Голод
+        /// <summary>
+        /// Уровень голода (от 0 до 100)
+        /// </summary>
+        public int Hunger { get => hunger; set => hunger = Spawner.Clamp(0, value, 100); }
+
+        /// <summary>
+        /// Насколько голод увеличивается с каждым ходом (для голодающих актёров (игрока))
+        /// </summary>
+        public int HungerRate { get => hungerRate; set => hungerRate = Spawner.Clamp(0, value, 100); }
         // Скиллы
 
         /// <summary>
@@ -146,6 +158,7 @@ namespace LibDungeon.Objects
             Health = 10;
             MeleeDamage = 2;
             MeleeSkill = 5;
+            HungerRate = 1;
             MoveType = MoveTypeEnum.Walking;
             Thoughts = ThoughtTypeEnum.Stand;
             MaxMovePoints = 4;

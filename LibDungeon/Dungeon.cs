@@ -44,6 +44,13 @@ namespace LibDungeon
             => (Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
 
         internal static double DistanceSqr(Actor a, Actor b) => DistanceSqr(a.X, a.Y, b.X, b.Y);
+
+        internal static T Clamp<T>(T left, T value, T right) where T : IComparable<T>
+        {
+            if (value.CompareTo(left) < 0) return left;
+            else if (value.CompareTo(right) > 0) return right;
+            else return value;
+        }
     }
 
     /// <summary>

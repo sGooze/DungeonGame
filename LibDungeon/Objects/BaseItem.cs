@@ -47,6 +47,11 @@ namespace LibDungeon.Objects
         public abstract bool RemoveOnPickup { get; }
 
         /// <summary>
+        /// Если true, то предмет будет удалён после использования
+        /// </summary>
+        public abstract bool OneTimeUse { get; }
+
+        /// <summary>
         /// Срабатывает после поднятия игроком
         /// </summary>
         /// <param name="user"></param>
@@ -80,7 +85,7 @@ namespace LibDungeon.Objects
         public abstract void Remove();
     }
 
-    [Spawnable("meme")]
+    //[Spawnable("meme")]
     public class TestItem : BaseItem
     {
         int rand;
@@ -88,6 +93,8 @@ namespace LibDungeon.Objects
         public override string Name => $"Шутка за {rand}";
 
         public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => throw new NotImplementedException();
 
         public override void Unuse(Actor user)
         {
@@ -100,5 +107,45 @@ namespace LibDungeon.Objects
         }
 
         public TestItem() => rand = Spawner.Random.Next(0, 301);
+    }
+
+    [Spawnable("food")]
+    public class Food : BaseItem
+    {
+        public override string Name => "Пищевой паёк";
+
+        public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => true;
+
+        public override void Unuse(Actor user) { }
+
+        public override void Use(Actor user)
+        {
+            user.Hunger -= 25;
+            user.Health += 5;
+        }
+    }
+
+    [Spawnable("sword")]
+    public class Sword : BaseItem
+    {
+        public override string Name => "Тяжёлый меч";
+
+        public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => false;
+
+        public override void Unuse(Actor user)
+        {
+            user.MeleeDamage -= 5;
+            user.HungerRate -= 1;
+        }
+
+        public override void Use(Actor user)
+        {
+            user.MeleeDamage += 5;
+            user.HungerRate += 1;
+        }
     }
 }

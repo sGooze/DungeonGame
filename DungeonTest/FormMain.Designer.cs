@@ -77,7 +77,7 @@
             // btnDispose
             // 
             this.btnDispose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDispose.Location = new System.Drawing.Point(122, 449);
+            this.btnDispose.Location = new System.Drawing.Point(122, 309);
             this.btnDispose.Name = "btnDispose";
             this.btnDispose.Size = new System.Drawing.Size(75, 23);
             this.btnDispose.TabIndex = 4;
@@ -88,12 +88,13 @@
             // btnEquip
             // 
             this.btnEquip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEquip.Location = new System.Drawing.Point(12, 449);
+            this.btnEquip.Location = new System.Drawing.Point(12, 309);
             this.btnEquip.Name = "btnEquip";
             this.btnEquip.Size = new System.Drawing.Size(75, 23);
             this.btnEquip.TabIndex = 3;
             this.btnEquip.Text = "Использовать";
             this.btnEquip.UseVisualStyleBackColor = true;
+            this.btnEquip.Click += new System.EventHandler(this.btnEquip_Click);
             // 
             // lbEquipment
             // 
@@ -102,16 +103,18 @@
             this.lbEquipment.Name = "lbEquipment";
             this.lbEquipment.Size = new System.Drawing.Size(185, 95);
             this.lbEquipment.TabIndex = 2;
+            this.lbEquipment.SelectedIndexChanged += new System.EventHandler(this.lbEquipment_SelectedIndexChanged);
             // 
             // lbInventory
             // 
             this.lbInventory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lbInventory.FormattingEnabled = true;
-            this.lbInventory.Location = new System.Drawing.Point(12, 309);
+            this.lbInventory.Location = new System.Drawing.Point(12, 338);
             this.lbInventory.Name = "lbInventory";
             this.lbInventory.Size = new System.Drawing.Size(185, 134);
             this.lbInventory.TabIndex = 1;
+            this.lbInventory.SelectedIndexChanged += new System.EventHandler(this.lbInventory_SelectedIndexChanged);
             // 
             // label1
             // 
