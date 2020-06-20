@@ -127,6 +127,25 @@ namespace LibDungeon.Objects
         }
     }
 
+    
+    [Spawnable("apple")]
+    public class Apple : BaseItem
+    {
+        public override string Name => "Яблоко";
+
+        public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => true;
+
+        public override void Unuse(Actor user) { }
+
+        public override void Use(Actor user)
+        {
+            user.Hunger -= 10;
+            user.Health += 5;
+        }
+    }
+
     [Spawnable("sword")]
     public class Sword : BaseItem
     {
@@ -148,4 +167,49 @@ namespace LibDungeon.Objects
             user.HungerRate += 1;
         }
     }
+
+    [Spawnable("shield")]
+    public class Shield : BaseItem
+    {
+        public override string Name => "Щит";
+
+        public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => false;
+
+        public override void Unuse(Actor user)
+        {
+            user.MaxHealth -= 5;
+            user.HungerRate -= 1;
+        }
+
+        public override void Use(Actor user)
+        {
+            user.MaxHealth += 5;
+            user.HungerRate += 1;
+        }
+    }
+
+    [Spawnable ("armor")]
+    public class Armor : BaseItem
+    {
+        public override string Name => "Броня";
+
+        public override bool RemoveOnPickup => false;
+
+        public override bool OneTimeUse => false;
+
+        public override void Unuse(Actor user)
+        {
+            user.MaxHealth -= 10;
+            user.HungerRate -= 1;
+        }
+
+        public override void Use(Actor user)
+        {
+            user.MaxHealth += 10;
+            user.HungerRate += 1;
+        }
+    }
+
 }
