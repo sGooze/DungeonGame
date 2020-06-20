@@ -52,6 +52,7 @@ namespace LibDungeon
         public bool PlayerMove(PlayerCommand command) {
             if (PlayerPawn.Health == 0)
                 return true;
+            PlayerPawn.Thoughts = ThoughtTypeEnum.Wander;
             bool move = _PlayerMove(command);
             if (move)
             {
@@ -71,6 +72,7 @@ namespace LibDungeon
         public bool PlayerMove(int dir_x, int dir_y) {
             if (PlayerPawn.Health == 0)
                 return true;
+            PlayerPawn.Thoughts = ThoughtTypeEnum.Wander;
             bool move = _PlayerMove(dir_x, dir_y);
             if (move)
             {
@@ -138,6 +140,7 @@ namespace LibDungeon
             {
                 // Во время отдыха игрок должен быстрее регенерировать здоровье
                 //  и медленнее становиться голоднее
+                PlayerPawn.Thoughts = ThoughtTypeEnum.Stand;
                 return true;
             }
 
